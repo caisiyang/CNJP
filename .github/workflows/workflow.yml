@@ -2,11 +2,9 @@ name: Auto Japan News
 
 on:
   schedule:
-    # 每小时的第 0 分钟自动运行 (UTC时间)
     - cron: '0 * * * *'
-  workflow_dispatch:      # 允许你在 GitHub 网页上手动点击按钮运行
+  workflow_dispatch:
 
-# ❗关键：给予脚本写入仓库的权限，否则无法保存 json 文件
 permissions:
   contents: write
 
@@ -15,32 +13,26 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # 1. 拉取代码
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. 准备 Python 环境
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      # 3. 安装依赖库 (feedparser 和 deep-translator)
       - name: Install dependencies
         run: |
-          pip install feedparser deep-translator
+          pip install feedparser deep-translator requests
 
-      # 4. 运行你的爬虫脚本
       - name: Run script
         run: python main.py
 
-      # 5. 把生成的新闻数据提交回仓库
       - name: Commit and Push changes
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # 添加 data.json 和 archive 文件夹里的所有变动
-          git add data.json archive/
-          # 提交变动 (如果没有新新闻，echo 跳过，防止报错)
+          # --- 🔥 这里改了：使用 . 代表添加所有变化，防止文件夹不存在报错 ---
+          git add .
           git commit -m "Auto update news" || echo "No changes to commit"
           git push
