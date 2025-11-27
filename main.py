@@ -31,6 +31,23 @@ def extract_image(entry):
             pass
     return ""
 
+def classify_news(title):
+    # 简单的关键词分类
+    keywords = {
+        "时政": ["政府", "政策", "习近平", "李强", "外交", "政治", "选举", "议员", "首相", "总统", "军事", "国防", "中共", "党", "台湾", "香港"],
+        "经济": ["经济", "贸易", "股市", "投资", "银行", "企业", "GDP", "市场", "消费", "产业", "汇率", "美元", "日元", "电动车", "EV"],
+        "社会": ["社会", "人口", "教育", "医疗", "犯罪", "事故", "灾害", "疫情", "生活", "旅游", "签证", "移民"],
+        "体育": ["体育", "奥运", "足球", "篮球", "棒球", "选手", "比赛", "冠军", "大谷"],
+        "科技": ["科技", "科学", "AI", "互联网", "手机", "芯片", "航天", "研发", "半导体"],
+        "娱乐": ["娱乐", "电影", "音乐", "明星", "动漫", "游戏"]
+    }
+    
+    for category, words in keywords.items():
+        for word in words:
+            if word in title:
+                return category
+    return "其他"
+
 def fetch_google_china_news():
     print("🚀 正在抓取 Google News (日本/中国相关)...")
     # 关键词：中国
@@ -68,6 +85,7 @@ def process_entries(entries):
             zh_title = clean_title 
 
         image_url = extract_image(entry)
+        category = classify_news(zh_title) # 自动分类
         
         # 获取当前时间对象
         now = get_current_jst_time()
@@ -94,7 +112,8 @@ def process_entries(entries):
             "link": entry.link,
             "time_str": time_display,
             "timestamp": timestamp, # 排序用
-            "image": image_url
+            "image": image_url,
+            "category": category
         }
         processed.append(item)
         time.sleep(0.2)

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,91 +9,162 @@
     <link rel="apple-touch-icon" href="icon.png">
     <style>
         :root {
-            --bg-color: #F9F9F7; /* 米白色/Rice Paper */
+            --bg-color: #F9F9F7;
             --card-bg: #FFFFFF;
-            --accent-color: #D64045; /* 柔和低饱和红 */
+            --accent-color: #D64045;
             --text-main: #333333;
             --text-sub: #8E8E93;
             --border-radius: 16px;
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Roboto, Arial, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            margin: 0; 
-            padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-            padding-bottom: 80px; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Roboto, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            padding-bottom: 80px;
         }
-        
-        #install-banner { display: none; background: #333; color: white; padding: 10px 15px; font-size: 13px; align-items: center; justify-content: space-between; }
-        #install-close { font-size: 18px; padding: 0 10px; cursor: pointer; color: #aaa; }
-        
+
+        #install-banner {
+            display: none;
+            background: #333;
+            color: white;
+            padding: 10px 15px;
+            font-size: 13px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #install-close {
+            font-size: 18px;
+            padding: 0 10px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
         /* Header */
-        .header { 
-            background: rgba(249, 249, 247, 0.96); 
-            padding: 20px 0 10px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            text-align: center; 
-            backdrop-filter: blur(20px); 
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        .header {
+            background: rgba(249, 249, 247, 0.96);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .header h1 { 
-            margin: 0; 
-            font-size: 24px; 
-            font-weight: 700; 
-            font-family: "Times New Roman", serif; 
-            letter-spacing: 0.5px; 
+
+        .header-title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: "Times New Roman", serif;
+            letter-spacing: 0.5px;
             color: var(--text-main);
         }
-        .header p { 
-            margin: 4px 0 0 0; 
-            font-size: 10px; 
-            color: var(--accent-color); 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
+
+        .header p {
+            margin: 2px 0 0 0;
+            font-size: 9px;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
             font-weight: 600;
         }
-        
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+
+        .fav-icon-btn {
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .fav-badge {
+            position: absolute;
+            top: -4px;
+            right: -6px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
         /* 公告栏 */
-        .notice-card { 
-            background-color: var(--card-bg); 
-            border-radius: var(--border-radius); 
-            padding: 16px; 
-            margin-bottom: 24px; 
-            font-size: 14px; 
-            color: var(--text-main); 
-            cursor: pointer; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            border: 1px solid rgba(0,0,0,0.03);
+        .notice-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
         }
-        .notice-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-        .notice-icon { margin-right: 6px; color: var(--accent-color); }
-        .notice-arrow { font-size: 10px; opacity: 0.4; transition: transform 0.3s; }
-        .notice-arrow.rotate { transform: rotate(180deg); }
-        .notice-details { 
-            display: none; 
-            margin-top: 12px; 
-            padding-top: 12px; 
-            border-top: 1px solid rgba(0,0,0,0.05); 
-            color: var(--text-sub); 
-            line-height: 1.6; 
+
+        .notice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .notice-icon {
+            margin-right: 6px;
+            color: var(--accent-color);
+        }
+
+        .notice-arrow {
+            font-size: 10px;
+            opacity: 0.4;
+            transition: transform 0.3s;
+        }
+
+        .notice-arrow.rotate {
+            transform: rotate(180deg);
+        }
+
+        .notice-details {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            color: var(--text-sub);
+            line-height: 1.6;
             font-size: 13px;
         }
 
-        .section-title { 
-            font-size: 18px; 
-            font-weight: 700; 
-            margin-bottom: 16px; 
-            padding-left: 4px;
+        /* 控制栏 (标题 + 排序) */
+        .control-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
             display: flex;
             align-items: center;
         }
+
         .section-title::before {
             content: '';
             width: 6px;
@@ -102,42 +174,142 @@
             margin-right: 10px;
         }
 
+        .sort-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sort-btn {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: #E5E5EA;
+            color: #8E8E93;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+        }
+
+        .sort-btn.active {
+            background: var(--text-main);
+            color: white;
+        }
+
+        /* 收藏夹视图 */
+        #fav-view {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .fav-header {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .fav-close {
+            font-size: 12px;
+            color: var(--accent-color);
+            cursor: pointer;
+        }
+
         /* 卡片 */
-        .card { 
-            background: var(--card-bg); 
-            border-radius: var(--border-radius); 
-            overflow: hidden; 
-            margin-bottom: 16px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
-            transition: transform 0.1s; 
-            display: flex; 
-            flex-direction: column; 
-            border: 1px solid rgba(0,0,0,0.02);
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            transition: transform 0.1s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            position: relative;
         }
-        .card:active { transform: scale(0.98); }
-        .card-img { width: 100%; height: 180px; object-fit: cover; background: #f0f0f0; display: none; } 
-        .card-img.show { display: block; }
-        .card-body { padding: 16px; }
-        .card-meta { display: flex; align-items: center; margin-bottom: 8px; }
-        .card-time { 
-            font-size: 11px; 
-            color: var(--accent-color); 
-            font-weight: 600; 
-            background: rgba(214, 64, 69, 0.08); 
-            padding: 3px 8px; 
-            border-radius: 6px; 
-            margin-right: 8px;
+
+        .card:active {
+            transform: scale(0.98);
         }
-        .card-origin { font-size: 11px; color: var(--text-sub); }
-        .card-title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            line-height: 1.5; 
-            color: var(--text-main); 
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #f0f0f0;
+            display: none;
         }
-        
+
+        .card-img.show {
+            display: block;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tag-cat {
+            background: #F0F0F0;
+            color: #555;
+        }
+
+        .tag-time {
+            background: rgba(214, 64, 69, 0.08);
+            color: var(--accent-color);
+        }
+
+        .card-origin {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-left: auto;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin-right: 24px;
+            /* Space for fav icon */
+        }
+
+        .card-fav-btn {
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            font-size: 18px;
+            color: #ddd;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .card-fav-btn.active {
+            color: var(--accent-color);
+        }
+
         /* 存档区域 */
-        .archive-section { margin-top: 40px; }
+        .archive-section {
+            margin-top: 40px;
+        }
+
         .archive-header {
             display: flex;
             justify-content: space-between;
@@ -147,58 +319,193 @@
             color: var(--text-sub);
             font-weight: 600;
             font-size: 14px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .archive-list { display: none; margin-top: 16px; }
+
+        .archive-list {
+            display: none;
+            margin-top: 16px;
+        }
+
         .archive-item {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
             padding: 12px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
             font-size: 14px;
             color: var(--text-main);
             text-decoration: none;
         }
-        .archive-item:last-child { border-bottom: none; }
-        .archive-date { font-size: 12px; color: var(--text-sub); margin-right: 10px; min-width: 80px; }
-        .archive-title { flex: 1; }
+
+        .archive-item:last-child {
+            border-bottom: none;
+        }
+
+        .archive-date {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-right: 10px;
+            min-width: 80px;
+        }
+
+        .archive-title {
+            flex: 1;
+        }
 
         /* 弹窗 */
-        #news-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; backdrop-filter: blur(4px); align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); width: 85%; max-width: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); animation: slideUp 0.3s; }
-        .modal-img { width: 100%; height: 200px; object-fit: cover; background: #eee; display: none; }
-        .modal-body { padding: 24px; }
-        .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 12px; line-height: 1.4; color: var(--text-main); }
-        .modal-origin-title { font-size: 13px; color: var(--text-sub); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.05); line-height: 1.5; }
-        .modal-btn { display: block; width: 100%; background: var(--text-main); color: white; text-align: center; padding: 14px 0; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 15px; transition: opacity 0.2s; }
-        .modal-btn:active { opacity: 0.8; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        #wx-mask { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; color: white; text-align: right; padding: 20px; }
+        #news-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 85%;
+            max-width: 400px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.3s;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #eee;
+            display: none;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .modal-origin-title {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            display: block;
+            width: 100%;
+            background: var(--text-main);
+            color: white;
+            text-align: center;
+            padding: 14px 0;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .modal-btn:active {
+            opacity: 0.8;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #wx-mask {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            color: white;
+            text-align: right;
+            padding: 20px;
+        }
     </style>
 </head>
+
 <body>
-    <div id="wx-mask" onclick="this.style.display='none'"><div style="font-size: 40px; margin-right: 15px;">↗</div><p style="font-size: 18px; font-weight: bold; margin-right: 15px;">请点击右上角 ...</p><p style="font-size: 16px; margin-right: 15px;">选择在浏览器打开</p></div>
+    <div id="wx-mask" onclick="this.style.display='none'">
+        <div style="font-size: 40px; margin-right: 15px;">↗</div>
+        <p style="font-size: 18px; font-weight: bold; margin-right: 15px;">请点击右上角 ...</p>
+        <p style="font-size: 16px; margin-right: 15px;">选择在浏览器打开</p>
+    </div>
     <div id="install-banner"><span id="install-text">添加到主屏幕，获取最佳体验</span><span id="install-close">×</span></div>
 
     <div class="header">
-        <h1>Japan Times</h1>
-        <p>Focus on China</p>
+        <div style="width: 24px;"></div> <!-- Spacer -->
+        <div class="header-title">
+            <h1>Japan Times</h1>
+            <p>Focus on China</p>
+        </div>
+        <div class="fav-icon-btn" onclick="toggleFavView()">
+            ⭐
+            <span class="fav-badge" id="fav-badge">0</span>
+        </div>
     </div>
 
     <div class="container">
         <!-- 公告栏 -->
         <div class="notice-card" onclick="toggleNotice()">
-            <div class="notice-header"><div><span class="notice-icon">●</span> 关于本站</div><div class="notice-arrow" id="n-arrow">▼</div></div>
+            <div class="notice-header">
+                <div><span class="notice-icon">●</span> 关于本站</div>
+                <div class="notice-arrow" id="n-arrow">▼</div>
+            </div>
             <div class="notice-details" id="n-details">
-                <p>本站由日本华人制作，建于2025年11月27日（因技术限制无法显示之前的新闻记录）。</p>
-                <p>因为国内亲朋好友无法看到日本新闻，因此本站专注聚合<b>日本媒体眼中的中国新闻</b>。</p>
-                <p>首页实时展示<b>近3天</b>的报道，超过3天的历史新闻会收录进存档永久保存。</p>
+                <p>本站由日本华人制作，建于2025年11月27日。</p>
+                <p>专注聚合<b>日本媒体眼中的中国新闻</b>。首页实时展示<b>近3天</b>的报道，超过3天的历史新闻会收录进存档永久保存。</p>
+                <p><b>本网站会每一个小时自动抓取一次数据。</b></p>
                 <p>目前是试运营状态，如果你对这些新闻感兴趣，请把本网页添加到手机主屏幕上。</p>
             </div>
         </div>
 
-        <div class="section-title">Latest News</div>
+        <!-- 收藏夹视图 -->
+        <div id="fav-view">
+            <div class="fav-header">
+                <span>⭐ 我的收藏</span>
+                <span class="fav-close" onclick="toggleFavView()">关闭</span>
+            </div>
+            <div id="fav-list"></div>
+        </div>
+
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <div class="section-title" id="list-title">Latest News</div>
+            <div class="sort-group">
+                <button class="sort-btn active" id="btn-hot" onclick="sortNews('hot')">🔥 热度</button>
+                <button class="sort-btn" id="btn-time" onclick="sortNews('time')">🕒 最新</button>
+            </div>
+        </div>
+
         <div id="news-list"></div>
 
         <!-- 存档区域 -->
@@ -224,10 +531,14 @@
 
     <script>
         let rawNewsData = [];
+        let favorites = JSON.parse(localStorage.getItem('jt_favorites') || '[]');
+        let currentSort = 'hot';
+        let currentFilter = 'all';
 
         function init() {
             if (/MicroMessenger/i.test(navigator.userAgent)) document.getElementById('wx-mask').style.display = 'block';
             checkPWA();
+            updateFavBadge();
             loadNews();
             document.getElementById('install-close').onclick = () => document.getElementById('install-banner').style.display = 'none';
         }
@@ -237,7 +548,7 @@
             const a = document.getElementById('n-arrow');
             const isShown = d.style.display === 'block';
             d.style.display = isShown ? 'none' : 'block';
-            if(isShown) a.classList.remove('rotate'); else a.classList.add('rotate');
+            if (isShown) a.classList.remove('rotate'); else a.classList.add('rotate');
         }
 
         function toggleArchive() {
@@ -246,6 +557,13 @@
             const isShown = list.style.display === 'block';
             list.style.display = isShown ? 'none' : 'block';
             arrow.innerText = isShown ? '▼' : '▲';
+        }
+
+        function toggleFavView() {
+            const v = document.getElementById('fav-view');
+            const isShown = v.style.display === 'block';
+            v.style.display = isShown ? 'none' : 'block';
+            if (!isShown) renderFavorites();
         }
 
         function checkPWA() {
@@ -259,14 +577,11 @@
 
         function loadNews() {
             const container = document.getElementById('news-list');
-            const archiveContainer = document.getElementById('archive-list');
-            const archiveSection = document.getElementById('archive-section');
-            
             container.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">Loading...</p>';
 
             fetch(`data.json?t=${Date.now()}`)
                 .then(res => {
-                    if(!res.ok) throw new Error("No Data");
+                    if (!res.ok) throw new Error("No Data");
                     return res.json();
                 })
                 .then(data => {
@@ -277,38 +592,101 @@
                     } else {
                         rawNewsData = [];
                     }
-                    
-                    processAndRender(rawNewsData);
+                    processAndRender();
                 })
                 .catch(err => {
                     container.innerHTML = '<div style="text-align:center;padding:30px;color:#ccc;">暂无新闻数据</div>';
                 });
         }
 
-        function processAndRender(list) {
+        function sortNews(type) {
+            currentSort = type;
+            document.getElementById('btn-hot').className = type === 'hot' ? 'sort-btn active' : 'sort-btn';
+            document.getElementById('btn-time').className = type === 'time' ? 'sort-btn active' : 'sort-btn';
+            processAndRender();
+        }
+
+        function filterByCategory(cat) {
+            currentFilter = cat;
+            document.getElementById('list-title').innerText = cat === 'all' ? 'Latest News' : `${cat} News`;
+            processAndRender();
+        }
+
+        function toggleFavorite(e, itemStr) {
+            e.stopPropagation();
+            const item = JSON.parse(decodeURIComponent(itemStr));
+            const index = favorites.findIndex(f => f.link === item.link);
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.unshift(item);
+            }
+
+            localStorage.setItem('jt_favorites', JSON.stringify(favorites));
+            updateFavBadge();
+            processAndRender(); // Re-render to update heart icon
+            if (document.getElementById('fav-view').style.display === 'block') renderFavorites();
+        }
+
+        function updateFavBadge() {
+            const b = document.getElementById('fav-badge');
+            if (favorites.length > 0) {
+                b.style.display = 'block';
+                b.innerText = favorites.length;
+            } else {
+                b.style.display = 'none';
+            }
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('fav-list');
+            if (favorites.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#ccc;padding:20px;">暂无收藏</div>';
+                return;
+            }
+            let html = '';
+            favorites.forEach(item => {
+                html += createCardHtml(item, true);
+            });
+            container.innerHTML = html;
+        }
+
+        function processAndRender() {
             const container = document.getElementById('news-list');
             const archiveList = document.getElementById('archive-list');
             const archiveSection = document.getElementById('archive-section');
 
-            if(!list || list.length === 0) {
+            if (!rawNewsData || rawNewsData.length === 0) {
                 container.innerHTML = '<div style="text-align:center;padding:30px;color:#ccc;">暂无相关新闻</div>';
                 return;
             }
 
-            // 1. Sort by timestamp desc
-            list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            // 1. Filter
+            let filtered = rawNewsData;
+            if (currentFilter !== 'all') {
+                filtered = rawNewsData.filter(i => (i.category || '其他') === currentFilter);
+            }
 
-            // 2. Filter logic
+            // 2. Sort
+            let sorted = [...filtered];
+            if (currentSort === 'time') {
+                sorted.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            } else {
+                // Hot (Default RSS order) - assuming rawNewsData is already in RSS order
+                // If filtered, we keep relative order
+            }
+
+            // 3. Split Recent / Archive
             const now = new Date();
             const threeDaysAgo = new Date();
             threeDaysAgo.setDate(now.getDate() - 3);
-            threeDaysAgo.setHours(0, 0, 0, 0); // 3天前的 0点
+            threeDaysAgo.setHours(0, 0, 0, 0);
 
             const recent = [];
             const archived = [];
 
-            list.forEach(item => {
-                // item.timestamp is in seconds
+            sorted.forEach(item => {
                 const itemDate = new Date(item.timestamp * 1000);
                 if (itemDate >= threeDaysAgo) {
                     recent.push(item);
@@ -317,28 +695,15 @@
                 }
             });
 
-            // 3. Render Recent
+            // 4. Render Recent
             let html = '';
             recent.forEach((item) => {
-                const imgClass = item.image ? 'card-img show' : 'card-img';
-                const safeItem = encodeURIComponent(JSON.stringify(item));
-                
-                html += `
-                <div class="card" onclick="openModal('${safeItem}')">
-                    <img src="${item.image || ''}" class="${imgClass}">
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="card-time">${item.time_str}</span>
-                            <span class="card-origin">${item.origin.split(' - ')[0]}</span>
-                        </div>
-                        <div class="card-title">${item.title}</div>
-                    </div>
-                </div>`;
+                html += createCardHtml(item);
             });
-            container.innerHTML = html || '<div style="text-align:center;padding:20px;color:#ccc;">近3天无新闻</div>';
+            container.innerHTML = html || '<div style="text-align:center;padding:20px;color:#ccc;">暂无新闻</div>';
 
-            // 4. Render Archive
-            if (archived.length > 0) {
+            // 5. Render Archive
+            if (archived.length > 0 && currentFilter === 'all') { // Only show archive in 'all' view to avoid confusion
                 archiveSection.style.display = 'block';
                 let archHtml = '';
                 archived.forEach(item => {
@@ -353,6 +718,29 @@
             } else {
                 archiveSection.style.display = 'none';
             }
+        }
+
+        function createCardHtml(item, isFavView = false) {
+            const imgClass = item.image ? 'card-img show' : 'card-img';
+            const safeItem = encodeURIComponent(JSON.stringify(item));
+            const isFav = favorites.some(f => f.link === item.link);
+            const favIconClass = isFav ? 'card-fav-btn active' : 'card-fav-btn';
+            const favIcon = isFav ? '❤️' : '🤍';
+            const category = item.category || '其他';
+
+            return `
+            <div class="card" onclick="openModal('${safeItem}')">
+                <img src="${item.image || ''}" class="${imgClass}">
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="tag tag-time">${item.time_str}</span>
+                        <span class="tag tag-cat" onclick="event.stopPropagation(); filterByCategory('${category}')">${category}</span>
+                        <span class="card-origin">${item.origin.split(' - ')[0]}</span>
+                    </div>
+                    <div class="card-title">${item.title}</div>
+                    <div class="${favIconClass}" onclick="toggleFavorite(event, '${safeItem}')">${favIcon}</div>
+                </div>
+            </div>`;
         }
 
         function openModal(itemStr) {
@@ -371,4 +759,5 @@
         init();
     </script>
 </body>
+
 </html>
