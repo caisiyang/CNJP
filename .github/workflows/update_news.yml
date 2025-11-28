@@ -38,18 +38,17 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # 2. 确保添加了需要提交的文件
-          # 请根据您的实际文件路径调整：如果只有一个数据文件叫 data.json，则添加 data.json
           git add data.json archive/ 
           
           # 3. 检查是否有文件更改 (如果文件有变动)
           if git diff --staged --quiet; then
             echo "No changes in data to commit. Skipping push."
           else
-            # 4. 提交更改
-            git commit -m "Update news data [skip ci]"
+            # 4. 提交更改，移除 [skip ci] 标签，确保 Cloudflare 触发部署
+            # 我们将标签改为 [data update]，Pages 不会跳过这个标签
+            git commit -m "Update news data [data update]" 
             
-            # 5. 【关键修复】使用 git push --force 强制覆盖远程仓库
-            # 对于自动化生成的数据文件，这是最可靠的更新方式。
+            # 5. 使用 git push --force 强制覆盖远程仓库
             echo "Attempting to force push to main branch..."
             git push origin main --force
           fi
