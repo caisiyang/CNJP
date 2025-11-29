@@ -20,14 +20,10 @@ function init() {
                 rawNewsData = data.news;
                 lastUpdated = data.last_updated;
 
-                // Display last updated time with new format (Task 5 + UI Enhancement 1: Split lines)
-                const lastUpdateEl = document.getElementById('last-update-time');
-                if (lastUpdateEl) {
-                    // Convert format: "2025年11月29日 10时48分" => "2025/11/29 10:48"
-                    const formattedTime = lastUpdated.replace(/(\d+)年(\d+)月(\d+)日\s+(\d+)时(\d+)分/, '$1/$2/$3 $4:$5');
-                    // Split into two lines and center
-                    lastUpdateEl.innerHTML = `<div class="header-section"><h2>最新100条日媒发布的中国报道</h2><p>上一次数据抓取时间:东京时间${formattedTime}</p></div>`;
-                }
+                document.getElementById('list-title').textContent = '最新100条日媒发布的中国报道';
+                const formattedTime = lastUpdated.replace(/(\d+)年(\d+)月(\d+)日\s+(\d+)时(\d+)分/, '$1/$2/$3 $4:$5');
+                document.getElementById('last-update-time').textContent = `上一次数据抓取时间：东京时间${formattedTime}`;
+                
             } else {
                 // Fallback for old format
                 rawNewsData = Array.isArray(data) ? data : [];
