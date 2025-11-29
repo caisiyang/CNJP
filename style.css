@@ -122,20 +122,6 @@ body {
 /* Control Bar */
 .control-bar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 0 4px;
-}
-
-.section-title-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.section-title {
-    font-size: 20px;
-    font-weight: 700;
     color: var(--primary-color);
     display: flex;
     align-items: center;
