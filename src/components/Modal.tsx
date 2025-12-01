@@ -7,7 +7,7 @@ import { createPortal } from "react-dom";
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
-    title: string;
+    title: string; // Kept for interface compatibility but not used in new layout
     children: React.ReactNode;
 }
 
@@ -31,23 +31,34 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
 
     return createPortal(
         <div
-            className="fixed inset-0 bg-black/60 z-[2000] flex items-center justify-center backdrop-blur-[4px] animate-in fade-in duration-200"
-            onClick={onClose}
+            className="fixed inset-0 z-[2000] flex items-center justify-center p-4"
         >
+            {/* Backdrop */}
             <div
-                className="bg-white dark:bg-[#1e1e1e] w-[85%] max-w-[360px] max-h-[80vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+                className="absolute inset-0 bg-black/60 backdrop-blur-[4px] animate-in fade-in duration-300"
+                onClick={onClose}
+            />
+
+            {/* Modal Container */}
+            <div
+                className="relative w-full max-w-[360px] max-h-[80vh] animate-in zoom-in-95 fade-in duration-300"
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className="px-4 py-3 border-b border-[#eee] dark:border-[#333] flex justify-between items-center">
-                    <div className="font-bold text-base text-[var(--text-main)]">{title}</div>
-                    <button
-                        onClick={onClose}
-                        className="bg-transparent border-none text-[#999] cursor-pointer p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
+                {/* Close Button - Outside Top Right */}
+                <button
+                    onClick={onClose}
+                    className="absolute -top-12 right-0 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-md"
+                    aria-label="Close"
+                >
+                    <X className="w-6 h-6" />
+                </button>
+
+                {/* Content Card - No Header Bar */}
+                <div className="bg-white dark:bg-[#1e1e1e] w-full rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+                    <div className="p-5 overflow-y-auto text-[var(--text-main)]">
+                        {children}
+                    </div>
                 </div>
-                <div className="p-4 overflow-y-auto text-[var(--text-main)]">{children}</div>
             </div>
         </div>,
         document.body

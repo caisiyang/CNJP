@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import Header from "@/components/Header";
 import CategoryNav from "@/components/CategoryNav";
 import NewsList from "@/components/NewsList";
@@ -11,7 +11,7 @@ import FavModal from "@/components/modals/FavModal";
 import ArchiveModal from "@/components/modals/ArchiveModal";
 import ArchiveDrawer from "@/components/ArchiveDrawer";
 import BackToTop from "@/components/BackToTop";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, X } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { CATEGORY_MAP, CATEGORIES } from "@/lib/constants";
 
@@ -29,7 +29,8 @@ export default function Home() {
 
   // UI State
   const [currentFilter, setCurrentFilter] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState(""); // Immediate input value
+  const [searchQuery, setSearchQuery] = useState(""); // Debounced search query
   const [visibleCount, setVisibleCount] = useState(25);
   const [showArchiveDrawer, setShowArchiveDrawer] = useState(false);
 
@@ -44,6 +45,9 @@ export default function Home() {
   const [pullStartY, setPullStartY] = useState(0);
   const [pullCurrentY, setPullCurrentY] = useState(0);
   const PULL_THRESHOLD = 80;
+
+  // Debounce timer
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Effects ---
   useEffect(() => {
@@ -141,6 +145,28 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // --- Debounced Search ---
+  const handleSearchInput = useCallback((val: string) => {
+    setSearchInput(val);
+
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Set new timeout (500ms debounce)
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchQuery(val.trim());
+      setVisibleCount(25);
+    }, 500);
+  }, []);
+
+  const handleClearSearch = () => {
+    setSearchInput("");
+    setSearchQuery("");
+    setVisibleCount(25);
+  };
+
   // --- Logic ---
   const filteredItems = useMemo(() => {
     let filtered = rawNewsData;
@@ -212,11 +238,6 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSearch = (val: string) => {
-    setSearchQuery(val.trim());
-    setVisibleCount(25);
-  };
-
   const fontStyle = {
     fontFamily: settings.fontStyle === "serif"
       ? "var(--font-noto-serif-tc), var(--font-noto-serif-sc), serif"
@@ -261,17 +282,30 @@ export default function Home() {
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[#999] pointer-events-none z-10" />
             <input
               type="text"
+              value={searchInput}
               placeholder={settings.lang === "sc" ? "搜索..." : "搜尋..."}
-              className="w-full py-1.5 pl-6 pr-2.5 rounded-xl border border-black/10 dark:border-white/10 bg-gray-50 dark:bg-[#2c2c2c] text-[13px] outline-none text-[var(--text-main)] transition-all focus:bg-white focus:shadow-md focus:border-[var(--primary)]"
-              onInput={(e) => handleSearch(e.currentTarget.value)}
+              className="w-full py-1.5 pl-6 pr-7 rounded-xl border border-black/10 dark:border-white/10 bg-gray-50 dark:bg-[#2c2c2c] text-[13px] outline-none text-[var(--text-main)] transition-all focus:bg-white focus:shadow-md focus:border-[var(--primary)]"
+              style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+              onChange={(e) => handleSearchInput(e.target.value)}
             />
+            {searchInput && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              >
+                <X className="w-3 h-3 text-[#999]" />
+              </button>
+            )}
           </div>
 
           {/* Archive Button - Right */}
           <button
             type="button"
             onClick={() => setShowArchiveDrawer(!showArchiveDrawer)}
-            style={fontStyle}
+            style={{
+              ...fontStyle,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+            }}
             className="py-1.5 px-3 rounded-xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#2c2c2c] text-[12px] text-[var(--text-main)] hover:border-[var(--primary)] hover:shadow-md transition-all whitespace-nowrap"
           >
             {settings.lang === "sc" ? "历史归档" : "歷史歸檔"}
@@ -282,21 +316,31 @@ export default function Home() {
       {/* Archive Drawer - Animated Wrapper */}
       <div
         className={`
-          overflow-hidden transition-all duration-300 ease-in-out bg-white dark:bg-[#121212] border-b border-gray-100 dark:border-gray-800
+          relative z-50 overflow-hidden transition-all duration-300 ease-in-out bg-white dark:bg-[#121212] border-b border-gray-100 dark:border-gray-800
           ${showArchiveDrawer ? "max-h-[200px] opacity-100 pb-2" : "max-h-0 opacity-0 border-none"}
         `}
       >
         <ArchiveDrawer
           archiveData={archiveData}
           onSelectDate={handleShowArchive}
+          isOpen={showArchiveDrawer}
         />
       </div>
+
+      {/* Backdrop for Archive Drawer */}
+      {showArchiveDrawer && (
+        <div
+          className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[2px] animate-in fade-in duration-200"
+          style={{ top: '110px' }} // Approximate header height to start below it
+          onClick={() => setShowArchiveDrawer(false)}
+        />
+      )}
 
       {/* 
           2. Content Module (Zone C + D)
           Contains CategoryNav (Sticky) and NewsList
       */}
-      <main className="max-w-[600px] mx-auto pb-10">
+      <main className="max-w-[600px] mx-auto pb-10 relative z-30">
 
         {/* CategoryNav (Zone C) */}
         <CategoryNav currentFilter={currentFilter} onFilterChange={handleFilterChange} />
@@ -311,6 +355,18 @@ export default function Home() {
           onFilterCategory={handleFilterChange}
           archiveData={archiveData}
         />
+
+        {/* Empty state after search */}
+        {!isLoading && searchQuery && filteredItems.length === 0 && (
+          <div className="px-4 py-16 text-center">
+            <p
+              style={fontStyle}
+              className="text-base text-gray-500 dark:text-gray-400"
+            >
+              {settings.lang === "sc" ? "本次没搜到结果，换个关键词试试吧。" : "本次沒搜到結果，換個關鍵詞試試吧。"}
+            </p>
+          </div>
+        )}
 
         {/* Loading */}
         {!isLoading && visibleCount < filteredItems.length && (

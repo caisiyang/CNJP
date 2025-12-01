@@ -6,6 +6,7 @@ import { zhCN, zhTW } from "date-fns/locale";
 import { useState } from "react";
 import Modal from "./Modal";
 import { CATEGORY_MAP, CATEGORY_DOT_COLORS } from "@/lib/constants";
+import { Heart, ExternalLink, Tag } from "lucide-react";
 
 export interface NewsItem {
   title: string;
@@ -72,6 +73,14 @@ export default function NewsCard({
     ? item.title_tc
     : item.title;
 
+  const handleCategoryClick = () => {
+    if (onFilterCategory && item.category) {
+      const catKey = CATEGORY_MAP[item.category] || "other";
+      onFilterCategory(catKey);
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <>
       <div
@@ -85,10 +94,7 @@ export default function NewsCard({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                if (onFilterCategory && item.category) {
-                  const catKey = CATEGORY_MAP[item.category] || "other";
-                  onFilterCategory(catKey);
-                }
+                handleCategoryClick();
               }}
               className="flex items-center gap-1.5 group/cat"
             >
@@ -123,33 +129,24 @@ export default function NewsCard({
             </span>
           </div>
 
-          {/* Star Icon */}
+          {/* Star Icon - Larger & Circular */}
           <button
             onClick={(e) => onToggleFav && onToggleFav(e, item)}
-            className={`p-1 rounded-full transition-colors ${isFav
-                ? "text-[var(--primary)] bg-red-50 dark:bg-red-900/20"
-                : "text-gray-300 hover:text-[var(--primary)] hover:bg-gray-50 dark:hover:bg-gray-800"
+            className={`p-2.5 rounded-full transition-all active:scale-90 ${isFav
+              ? "text-[var(--primary)] bg-red-50 dark:bg-red-900/20"
+              : "text-gray-300 hover:text-[var(--primary)] hover:bg-gray-50 dark:hover:bg-gray-800"
               }`}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill={isFav ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
+            <Heart className={`w-4 h-4 ${isFav ? "fill-current" : ""}`} />
           </button>
         </div>
 
-        {/* Title */}
+        {/* Title - with subtle text shadow */}
         <h3
-          style={fontStyleObj}
+          style={{
+            ...fontStyleObj,
+            textShadow: '0 1px 2px rgba(0,0,0,0.08)'
+          }}
           className="text-[16px] font-bold leading-[1.5] text-[var(--text-main)] line-clamp-2 group-hover:text-[var(--primary)] transition-colors"
         >
           {displayTitle}
@@ -159,40 +156,63 @@ export default function NewsCard({
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={displayTitle}
+        title="" // Empty title for custom layout
       >
-        <div className="space-y-6">
-          <div className="flex items-center justify-between text-sm text-[var(--text-sub)] border-b border-gray-100 dark:border-gray-800 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="font-medium text-[var(--text-main)]">{item.origin}</span>
-              <span>{timeDisplay}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
-              <span>{displayCategory}</span>
-            </div>
-          </div>
-
-          <div
+        <div className="space-y-4">
+          {/* 1. Chinese Title - Smaller (text-lg) */}
+          <h2
             style={fontStyleObj}
-            className="text-[16px] leading-relaxed text-[var(--text-main)] whitespace-pre-wrap"
+            className="text-lg font-bold leading-snug text-[var(--text-main)]"
           >
-            {item.description || (settings.lang === "sc" ? "暂无摘要" : "暫無摘要")}
+            {displayTitle}
+          </h2>
+
+          {/* 2. Japanese Title - Smaller (text-sm) */}
+          {item.title_ja && (
+            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+              {item.title_ja}
+            </h3>
+          )}
+
+          {/* 3. Source & Time - Smaller (text-xs) */}
+          <div className="flex items-center gap-3 text-xs text-[var(--text-sub)] pb-2 border-b border-gray-100 dark:border-gray-800">
+            <span className="font-medium">{item.origin}</span>
+            <span>•</span>
+            <span>{timeDisplay}</span>
           </div>
 
-          <div className="pt-4 flex justify-end">
+          {/* 4. Bottom Buttons Row - Smaller (py-1.5 px-3 text-xs) */}
+          <div className="pt-2 flex items-center justify-between gap-2">
+            {/* Left: Fav Button */}
+            <button
+              onClick={(e) => onToggleFav && onToggleFav(e, item)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${isFav
+                  ? "bg-red-50 dark:bg-red-900/20 text-red-500"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
+            >
+              <Heart className={`w-3.5 h-3.5 ${isFav ? "fill-current" : ""}`} />
+              <span>{settings.lang === "sc" ? "收藏" : "收藏"}</span>
+            </button>
+
+            {/* Middle: Category Tag Button */}
+            <button
+              onClick={handleCategoryClick}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+            >
+              <Tag className="w-3.5 h-3.5" />
+              <span>{displayCategory}</span>
+            </button>
+
+            {/* Right: Read Original Button */}
             <a
               href={item.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[var(--primary)] text-white rounded-full text-sm font-medium hover:opacity-90 transition-all shadow-lg shadow-red-500/20"
+              className="flex items-center gap-1.5 px-4 py-1.5 bg-[var(--primary)] text-white rounded-full text-xs font-medium hover:opacity-90 transition-all shadow-lg shadow-red-500/20"
             >
-              {settings.lang === "sc" ? "阅读原文" : "閱讀原文"}
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
+              <span>{settings.lang === "sc" ? "阅读原文" : "閱讀原文"}</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>

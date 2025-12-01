@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useTheme } from "./ThemeContext";
 import { CATEGORIES, CATEGORY_DOT_COLORS } from "@/lib/constants";
 
@@ -10,12 +11,25 @@ interface CategoryNavProps {
 
 export default function CategoryNav({ currentFilter, onFilterChange }: CategoryNavProps) {
   const { settings } = useTheme();
+  const itemsRef = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const fontStyleObj = {
     fontFamily: settings.fontStyle === "serif"
       ? "var(--font-noto-serif-tc), var(--font-noto-serif-sc), serif"
       : "var(--font-noto-sans-tc), var(--font-noto-sans-sc), sans-serif",
   };
+
+  // Auto-scroll to active item
+  useEffect(() => {
+    const activeItem = itemsRef.current[currentFilter];
+    if (activeItem) {
+      activeItem.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [currentFilter]);
 
   return (
     <nav className="sticky top-0 w-full bg-[var(--background)] z-40 overflow-x-auto scrollbar-hide pt-2 pb-2">
@@ -38,6 +52,9 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
           return (
             <button
               key={cat.key}
+              ref={(el) => {
+                itemsRef.current[cat.key] = el;
+              }}
               onClick={() => onFilterChange(cat.key)}
               style={fontStyleObj}
               className={`

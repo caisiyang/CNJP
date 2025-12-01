@@ -8,9 +8,10 @@ import { NewsItem } from "./NewsCard";
 interface ArchiveDrawerProps {
     archiveData: Record<string, NewsItem[]>;
     onSelectDate: (dateStr: string) => void;
+    isOpen: boolean; // Added prop to trigger reset
 }
 
-export default function ArchiveDrawer({ archiveData, onSelectDate }: ArchiveDrawerProps) {
+export default function ArchiveDrawer({ archiveData, onSelectDate, isOpen }: ArchiveDrawerProps) {
     const { settings } = useTheme();
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -27,13 +28,17 @@ export default function ArchiveDrawer({ archiveData, onSelectDate }: ArchiveDraw
     // Get today's date string
     const todayStr = format(new Date(), "yyyy-MM-dd");
 
-    // Auto-scroll to bottom (today) within the container only
+    // Auto-scroll to bottom (today) whenever isOpen becomes true
     useEffect(() => {
-        if (containerRef.current) {
-            // Scroll the container to the bottom, not the entire page
-            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        if (isOpen && containerRef.current) {
+            // Use setTimeout to ensure the DOM is ready and layout is calculated
+            setTimeout(() => {
+                if (containerRef.current) {
+                    containerRef.current.scrollTop = containerRef.current.scrollHeight;
+                }
+            }, 50);
         }
-    }, []);
+    }, [isOpen]);
 
     const formatDateDisplay = (dateStr: string) => {
         try {

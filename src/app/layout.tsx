@@ -1,40 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Noto_Sans_SC,
-  Noto_Serif_SC,
-  Noto_Sans_TC,
-  Noto_Serif_TC
-} from "next/font/google";
+// Local font hosting via fontsource - better performance for CN users
+import "@fontsource/noto-sans-sc/400.css";
+import "@fontsource/noto-sans-sc/500.css";
+import "@fontsource/noto-sans-sc/700.css";
+import "@fontsource/noto-serif-sc/400.css";
+import "@fontsource/noto-serif-sc/500.css";
+import "@fontsource/noto-serif-sc/700.css";
+import "@fontsource/noto-serif-sc/900.css";
+import "@fontsource/noto-sans-tc/400.css";
+import "@fontsource/noto-sans-tc/500.css";
+import "@fontsource/noto-sans-tc/700.css";
+import "@fontsource/noto-serif-tc/400.css";
+import "@fontsource/noto-serif-tc/500.css";
+import "@fontsource/noto-serif-tc/700.css";
+import "@fontsource/noto-serif-tc/900.css";
 import "./globals.css";
 import { Providers } from "../components/Providers";
-
-const notoSansSC = Noto_Sans_SC({
-  variable: "--font-noto-sans-sc",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-
-const notoSerifSC = Noto_Serif_SC({
-  variable: "--font-noto-serif-sc",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-  display: "swap",
-});
-
-const notoSansTC = Noto_Sans_TC({
-  variable: "--font-noto-sans-tc",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-
-const notoSerifTC = Noto_Serif_TC({
-  variable: "--font-noto-serif-tc",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "China News from Japan | 从日本看中国",
@@ -58,12 +39,6 @@ export default function RootLayout({
     <html
       lang="zh-CN"
       suppressHydrationWarning
-      className={`
-        ${notoSansSC.variable} ${notoSansSC.className}
-        ${notoSerifSC.variable} ${notoSerifSC.className}
-        ${notoSansTC.variable} ${notoSansTC.className}
-        ${notoSerifTC.variable} ${notoSerifTC.className}
-      `}
     >
       <body className="antialiased">
         <Providers>

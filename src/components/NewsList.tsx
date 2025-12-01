@@ -1,9 +1,9 @@
 "use client";
 
-import React, { Fragment } from "react";
 import NewsCard, { NewsItem } from "./NewsCard";
 import NewsCardSkeleton from "./NewsCardSkeleton";
 import { useTheme } from "./ThemeContext";
+import { Loader2 } from "lucide-react";
 
 interface NewsListProps {
   news: NewsItem[];
@@ -12,7 +12,7 @@ interface NewsListProps {
   favorites: NewsItem[];
   onShowArchive: (dateStr: string) => void;
   onFilterCategory: (category: string) => void;
-  archiveData?: Record<string, NewsItem[]>;
+  archiveData: Record<string, NewsItem[]>;
 }
 
 export default function NewsList({
@@ -22,50 +22,59 @@ export default function NewsList({
   favorites,
   onShowArchive,
   onFilterCategory,
-  archiveData
+  archiveData,
 }: NewsListProps) {
   const { settings } = useTheme();
 
-  // Show skeleton when loading
+  const fontStyleObj = {
+    fontFamily: settings.fontStyle === "serif"
+      ? "var(--font-noto-serif-tc), var(--font-noto-serif-sc), serif"
+      : "var(--font-noto-sans-tc), var(--font-noto-sans-sc), sans-serif",
+  };
+
+  // Loading state - Show skeleton screens
   if (isLoading) {
     return (
-      <div className="w-full px-4 space-y-4 pb-8">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <NewsCardSkeleton key={index} />
+      <div className="px-4 space-y-3">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <NewsCardSkeleton key={i} />
         ))}
       </div>
     );
   }
 
-  // Show friendly empty state when no data (and not loading)
-  if (!news || news.length === 0) {
+  // Empty state - No news available
+  if (news.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-[var(--text-sub)]">
-        <div className="text-center space-y-2">
-          <p className="text-lg">
-            {settings.lang === "sc" ? "正在连接东京塔..." : "正在連接東京塔..."}
-          </p>
-          <p className="text-sm opacity-60">
-            {settings.lang === "sc" ? "暂无新闻数据" : "暫無新聞數據"}
+      <div className="px-4 py-16 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+          <p
+            style={fontStyleObj}
+            className="text-base text-gray-500 dark:text-gray-400"
+          >
+            {settings.lang === "sc" ? "正在连接东京塔" : "正在連接東京塔"}
           </p>
         </div>
       </div>
     );
   }
 
-  // Show actual news cards
+  // Normal state - Render news cards
   return (
-    <div className="w-full px-4 space-y-4 pb-8">
-      {news.map((item, index) => (
-        <Fragment key={`${item.link}-${index}`}>
+    <div className="px-4 space-y-3">
+      {news.map((item, i) => {
+        const isFav = favorites.some((f) => f.link === item.link);
+        return (
           <NewsCard
+            key={`${item.link}-${i}`}
             item={item}
-            isFav={favorites.some((f) => f.link === item.link)}
+            isFav={isFav}
             onToggleFav={onToggleFav}
             onFilterCategory={onFilterCategory}
           />
-        </Fragment>
-      ))}
+        );
+      })}
     </div>
   );
 }
