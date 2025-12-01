@@ -94,7 +94,7 @@ export default function Home() {
       } else if (scrollDelta < 0) {
         setIsHeaderHidden(false);
       }
-      
+
       lastScrollTop.current = scrollTop <= 0 ? 0 : scrollTop;
 
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
@@ -191,9 +191,9 @@ export default function Home() {
     <div className="min-h-screen bg-[var(--background)]">
       {/* 
           1. Header (Fixed, w-full, z-50)
-             隐藏时向上移动 100% (-60px)
+          隐藏时向上移动 100% (-60px)
       */}
-      <div 
+      <div
         className="fixed top-0 left-0 w-full z-50 transition-transform duration-300 ease-out"
         style={{ transform: isHeaderHidden ? "translateY(-100%)" : "translateY(0)" }}
       >
@@ -207,9 +207,9 @@ export default function Home() {
 
       {/* 
           2. CategoryNav (Fixed, w-full, z-40)
-             初始位置 top-[60px] (header下方)。
-             当 Header 隐藏时，Header 移走了，Nav 需要上移到 top-0。
-             移动距离 = -60px。
+          初始位置 top-[60px] (header下方)。
+          当 Header 隐藏时，Header 移走了，Nav 需要上移到 top-0。
+          移动距离 = -60px。
       */}
       <div
         className="fixed top-[60px] left-0 w-full z-40 transition-transform duration-300 ease-out"
@@ -220,28 +220,44 @@ export default function Home() {
 
       {/* 
           3. Main Content
-             pt-[110px]: 预留头部空间 (60px Header + ~50px Nav)
-             max-w-[600px] mx-auto: 内容居中
+          pt-[110px]: 预留头部空间 (60px Header + ~50px Nav)
+          max-w-[600px] mx-auto: 内容居中
       */}
       <main className="pt-[110px] pb-10 max-w-[600px] mx-auto relative">
-        
+
         {/* Control Bar (Search & Info) */}
         <div className="px-4 pb-2 pt-1 flex justify-between items-end">
-          <div className="flex flex-col justify-end max-w-[60%]">
-            <div 
+          <div className="flex flex-col justify-end max-w-[70%] items-start">
+            <div
               style={fontStyle}
-              className="text-[13px] font-bold text-[var(--text-main)] mb-0.5 leading-[1.2]"
+              className="inline-block bg-[#FFEBEE] dark:bg-[#3E2723] text-[var(--primary)] rounded-md px-2 py-1.5 shadow-sm"
             >
-              {searchQuery
-                ? `"${searchQuery}"`
-                : currentFilter !== "all"
-                  ? CATEGORY_MAP[currentFilter] || currentFilter
-                  : settings.lang === "sc"
-                    ? "100条日媒最新发布的中国新闻"
-                    : "100條日媒最新發布的中國新聞"}
-            </div>
-            <div style={fontStyle} className="text-[10px] text-[var(--text-sub)] font-normal">
-              {lastUpdated && (settings.lang === "sc" ? "数据更新于：" : "數據更新於：") + lastUpdated}
+              <div className="text-[13px] font-bold mb-0.5 leading-[1.2]">
+                {searchQuery
+                  ? `"${searchQuery}"`
+                  : currentFilter !== "all"
+                    ? CATEGORY_MAP[currentFilter] || currentFilter
+                    : settings.lang === "sc"
+                      ? "100条日媒最新发布的中国新闻"
+                      : "100條日媒最新發布的中國新聞"}
+              </div>
+              <div className="text-[10px] font-normal opacity-90">
+                {(() => {
+                  if (!lastUpdated) return null;
+                  const match = lastUpdated.match(/(\d{4})年(\d{2})月(\d{2})日 (\d{2})时(\d{2})分/);
+                  if (match) {
+                    const [_, year, month, day, hour, minute] = match;
+                    const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute));
+                    const diff = Date.now() - date.getTime();
+                    const minutes = Math.floor(diff / 60000);
+                    const timeStr = minutes >= 0 ? minutes : 0;
+                    return settings.lang === "sc"
+                      ? `数据更新于：${timeStr}分钟前`
+                      : `數據更新於：${timeStr}分鐘前`;
+                  }
+                  return (settings.lang === "sc" ? "数据更新于：" : "數據更新於：") + lastUpdated;
+                })()}
+              </div>
             </div>
           </div>
           <div className="relative w-[110px] group">

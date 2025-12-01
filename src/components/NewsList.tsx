@@ -39,14 +39,19 @@ export default function NewsList({
             onToggleFav={onToggleFav}
             onFilterCategory={onFilterCategory}
           />
-          
+
           {/* 在第 5 条新闻之后插入 ArchiveBar */}
           {index === 4 && (
             // 使用 -mx-4 抵消父容器的 padding，让 ArchiveBar 能够全宽显示
             <div className="-mx-4 my-2">
-              <ArchiveBar 
-                onShowArchive={onShowArchive} 
-                archiveData={archiveData} 
+              <div className="px-4 mb-2 text-left">
+                <span className="inline-block bg-[#FFEBEE] dark:bg-[#3E2723] text-[var(--primary)] text-xs font-bold px-2 py-1 rounded-md shadow-sm">
+                  ↓点击查看新闻存档日历，红色数字为新闻数
+                </span>
+              </div>
+              <ArchiveBar
+                onShowArchive={onShowArchive}
+                archiveData={archiveData}
               />
             </div>
           )}

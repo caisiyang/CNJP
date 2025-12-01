@@ -22,8 +22,8 @@ export default function ArchiveBar({ onShowArchive, archiveData = {} }: ArchiveB
     // 修正：settings.fontStyle
     const fontStyleObj = {
         fontFamily: settings.fontStyle === "serif"
-          ? "var(--font-noto-serif-tc), var(--font-noto-serif-sc), serif"
-          : "var(--font-noto-sans-tc), var(--font-noto-sans-sc), sans-serif",
+            ? "var(--font-noto-serif-tc), var(--font-noto-serif-sc), serif"
+            : "var(--font-noto-sans-tc), var(--font-noto-sans-sc), sans-serif",
     };
 
     const today = new Date();
@@ -62,7 +62,7 @@ export default function ArchiveBar({ onShowArchive, archiveData = {} }: ArchiveB
     return (
         <div className="w-full relative z-10 flex items-center justify-center pt-3 pb-4 px-4">
             <style>{css}</style>
-            
+
             <div className="w-full max-w-screen-xl">
                 <div className="grid grid-cols-8 gap-1 lg:gap-5">
                     {/* History Button */}
@@ -104,7 +104,7 @@ export default function ArchiveBar({ onShowArchive, archiveData = {} }: ArchiveB
                     <button
                         onClick={() => handleDayClick(today)}
                         style={fontStyleObj}
-                        className="flex flex-col items-center justify-center gap-0.5 aspect-[3/4] rounded-xl bg-[var(--primary)] shadow-3d hover:shadow-3d-hover text-white transition-all transform shadow-3d-hover"
+                        className="flex flex-col items-center justify-center gap-0.5 aspect-[3/4] rounded-xl bg-[#FFEBEE] dark:bg-[#3E2723] text-[var(--primary)] shadow-3d hover:shadow-3d-hover transition-all transform shadow-3d-hover"
                     >
                         <span className="text-[0.5rem] opacity-90 font-medium leading-none">
                             {settings.lang === "sc" ? "今日" : "今日"}
