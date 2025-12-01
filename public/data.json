@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025年12月02日 02时41分",
+  "last_updated": "2025年12月02日 03时21分",
   "news": [
     {
       "title": "日中议会联合会会见中国大使并传达年底访华意向 - 冲绳时报",
@@ -17,7 +17,7 @@
     {
       "title": "俄罗斯安理会秘书2日会见中国外长讨论军事合作等 - 国际文传电讯社 - 路透",
       "title_tc": "俄羅斯安理會秘書2日會見中國外長討論軍事合作等 - 國際文傳電訊社 - 路透",
-      "title_ja": "ロシア安保会議書記、2日に中国外相と会談 軍事協力など協議＝インタファクス - ロイター",
+      "title_ja": "ロシア安保会議書記、2日に中国外相と会談 軍事協力など協議＝インタファクス - Reuters",
       "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNeWY3eHBVaUFKZ01UeTdPWWhDbE4xcmRaMjNHRVppdDFxdGVfOHBPOFB2emJqdjVzRWRPYVRFNGo2Rk9kVmtLekVQLWxzU0tRLWYtTmdsTWV2dGFHU2lRWUxJbUJ0U0cxa0hpeTVOUmp6QUgxcTRsT3piRXpJSmlidA?oc=5",
       "image": "",
       "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
@@ -25,7 +25,33 @@
       "category": "时政",
       "time_str": "12-02 02:00",
       "timestamp": 1764608402,
-      "origin": "ロイター"
+      "origin": "Reuters"
+    },
+    {
+      "title": "日中议会联合会会见中国驻福岛民防社大使",
+      "title_tc": "日中議會聯合會會見中國駐福島民防社大使",
+      "title_ja": "日中議連、中国大使と面会 - 福島民報社",
+      "link": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE5wZkQzNW82bzhMN2RVZ2VueTlTUGlZZ1NJckJuRGRveDBiY1V6aUpqQnJ2OGthSDVrRmwxVkNXcnFITmdYRldmVllTRjhrOWNaTnU3cVYxdnM2UUQzZTVwaGpmUWFIUQ?oc=5",
+      "image": "",
+      "logo": "https://www.google.com/s2/favicons?domain=www.minpo.jp&sz=128",
+      "summary": "",
+      "category": "时政",
+      "time_str": "12-02 02:00",
+      "timestamp": 1764608400,
+      "origin": "福島民報社"
+    },
+    {
+      "title": "比亚迪11月新车销量下降5%至48万辆，尽管海外快速增长，但在中国仍举步维艰 - 日本经济新闻",
+      "title_tc": "比亞迪11月新車銷量下降5%至48萬輛，儘管海外快速增長，但在中國仍舉步維艱 - 日本經濟新聞",
+      "title_ja": "BYD、11月新車販売5%減の48万台 海外急増も中国国内で苦戦続く - 日本経済新聞",
+      "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1uUS1tWHU3WEt3WXluZ3U4MW5aZXNkV2V5cEdGd09PbDVERGkxVV9yLTlfTG9CSGFFa1Y3WmwxVDJkUy15ZWtpVFdSS0pXc2ZQdGdsMlRXZXhnWTNEa21kbTF1empjNlRYcC0xdg?oc=5",
+      "image": "",
+      "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128",
+      "summary": "",
+      "category": "经济",
+      "time_str": "12-02 00:12",
+      "timestamp": 1764601936,
+      "origin": "日本経済新聞"
     },
     {
       "title": "学习中国的技术创新（经济学人） - 日本经济新闻",
@@ -1096,7 +1122,7 @@
     {
       "title": "外交部长王毅寻求英国在台湾问题和“一个中国”问题上的支持 - 路透",
       "title_tc": "外交部長王毅尋求英國在台灣問題和“一個中國”問題上的支持 - 路透",
-      "title_ja": "王毅外相、台湾問題で英国に支持求める 「一つの中国」巡り - ロイター",
+      "title_ja": "王毅外相、台湾問題で英国に支持求める 「一つの中国」巡り - Reuters",
       "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNUHJEU1ZRNU12amo4VXVDYTh2SkI0eXJBYTlNU0t2YzhDNlMzeGZmeXFpeV9yM2x5RHZ3MWM3c2JKOHFxNzV0ci0yaTF2WWJib2I3WkcwMGdlWFctRnIwZDZUZnAyV0lHYW11UEdEUmU1a1pUYVZvU3RoV3NJUnY1MA?oc=5",
       "image": "",
       "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
@@ -1104,7 +1130,7 @@
       "category": "时政",
       "time_str": "12-01 14:18",
       "timestamp": 1764566280,
-      "origin": "ロイター"
+      "origin": "Reuters"
     },
     {
       "title": "“双手插袋”的中国董事拜访日本企业（ABEMA TIMES） - 雅虎！消息",
@@ -2045,7 +2071,7 @@
     {
       "title": "中国人民银行加强对虚拟货币的打击力度，警告投机和洗钱活动 - 路透中文网",
       "title_tc": "中國人民銀行加強對虛擬貨幣的打擊力度，警告投機和洗錢活動 - 路透中文網",
-      "title_ja": "中国人民銀、仮想通貨取り締まり強化 投機やマネロン警戒 - ロイター",
+      "title_ja": "中国人民銀、仮想通貨取り締まり強化 投機やマネロン警戒 - Reuters",
       "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPZ1h0bnJ1Q2FRMHRxNEtSbnNkWkswempydW5NLUFwZ3hZNEtDMGhaeWJUXzJzRC1wRlBRLXhnYmk4MGY3XzRBMWxSQk5RM204OUlYbV9wNURVMThXQnh2a1MwalNnbmNjYnZkaVJlQ2htWi1OUjJfeDhteGtraUJ0Sw?oc=5",
       "image": "",
       "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
@@ -2053,7 +2079,7 @@
       "category": "经济",
       "time_str": "12-01 09:04",
       "timestamp": 1764547440,
-      "origin": "ロイター"
+      "origin": "Reuters"
     },
     {
       "title": "滨崎步对中国上海演出取消的“虔诚回应”得到了越来越多的回应：“我的心很热”和“太酷了”(ENCOUNT) - 雅虎！消息",
@@ -2188,7 +2214,7 @@
     {
       "title": "数千人哀悼香港火灾；中国呼吁对抗议活动进行“严厉惩罚” - 路透",
       "title_tc": "數千人哀悼香港火災；中國呼籲對抗議活動進行“嚴厲懲罰” - 路透",
-      "title_ja": "香港火災、数千人が追悼 中国は抗議活動「厳正に処罰」とけん制 - ロイター",
+      "title_ja": "香港火災、数千人が追悼 中国は抗議活動「厳正に処罰」とけん制 - Reuters",
       "link": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPWjlhdHZTeFVNTEpPVlZUQk5Gc2NFREJtRUk4NDQwTDlRRHdXTnU3QV81X2VMTjFNeHJncHdtVWFDWGpaakhiNG9HSDV0Rk05WVBTSUF2U2g0X0xEV2JYYk5NemhjemdtSnVERUl2WmlYUF9lYm9KNDE4ZGtSd0FWYzBB?oc=5",
       "image": "",
       "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
@@ -2196,7 +2222,7 @@
       "category": "时政",
       "time_str": "12-01 07:26",
       "timestamp": 1764541593,
-      "origin": "ロイター"
+      "origin": "Reuters"
     },
     {
       "title": "“撒娇政客”的历史 亲近中国、以熊猫为诱饵的政客们 自民党前干事长二阶俊博、前干事长森山丰、总务大臣林吉正的“政绩”（新闻七号 - 雅虎新闻）",
