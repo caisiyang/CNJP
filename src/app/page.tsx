@@ -38,7 +38,7 @@ export default function Home() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // SECTION 1: Manual Trending Keywords (User-curated)
+  // SECTION 1: Manual Trending Keywords
   const trendingNow = ["高市", "滨崎步", "台湾"];
   const TC_MAP: Record<string, string> = {
     "高市": "高市",
@@ -62,7 +62,6 @@ export default function Home() {
     ]);
 
     const wordCounts: Record<string, number> = {};
-    // Fallback if Segmenter not supported (though most modern browsers do)
     const hasSegmenter = typeof Intl !== 'undefined' && (Intl as any).Segmenter;
     
     if (hasSegmenter) {
@@ -338,6 +337,7 @@ export default function Home() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {/* Pull Refresh Indicator */}
       <div
         className="fixed top-0 left-0 w-full flex justify-center items-center pointer-events-none z-[60] transition-all duration-200"
         style={{
@@ -372,7 +372,6 @@ export default function Home() {
                 onChange={(e) => handleSearchInput(e.target.value)}
                 onFocus={() => setShowSuggestions(true)}
               />
-              {/* --- 修改后的 Clear Button --- */}
               {searchInput && (
                 <button
                   onClick={handleClearSearch}
@@ -476,28 +475,60 @@ export default function Home() {
         <CategoryNav currentFilter={currentFilter} onFilterChange={handleFilterChange} />
       </Header>
 
+      {/* --- Archive Drawer (Fixed, Centered, Rounded) --- */}
+      {/* 
+          1. left-1/2 -translate-x-1/2: 强制居中
+          2. w-full max-w-[600px]: 限制最大宽度与新闻卡片一致
+          3. rounded-b-2xl: 底部大圆角
+          4. shadow-xl: 增加悬浮感
+          5. border-x: 增加两侧边框，让它看起来像独立的面板
+      */}
       <div
         className={`
-          relative z-50 overflow-hidden transition-all duration-300 ease-in-out bg-white dark:bg-[#121212] border-b border-gray-100 dark:border-gray-800
-          ${showArchiveDrawer ? "max-h-[200px] opacity-100 pb-2" : "max-h-0 opacity-0 border-none"}
+          fixed left-1/2 -translate-x-1/2 w-full max-w-[600px] z-40 
+          bg-white dark:bg-[#121212] 
+          border-b border-x border-gray-100 dark:border-gray-800 
+          shadow-2xl rounded-b-2xl
+          transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)
+          ${showArchiveDrawer 
+            ? "opacity-100 translate-y-0 visible pointer-events-auto" 
+            : "opacity-0 -translate-y-2 invisible pointer-events-none"
+          }
         `}
+        style={{ top: '112px' }}
       >
-        <ArchiveDrawer
-          archiveData={archiveData}
-          onSelectDate={handleShowArchive}
-          isOpen={showArchiveDrawer}
-        />
+        {/* 内部容器保持不动，只做内容展示 */}
+        <div className="py-2"> 
+            <ArchiveDrawer
+              archiveData={archiveData}
+              onSelectDate={handleShowArchive}
+              isOpen={showArchiveDrawer}
+            />
+        </div>
       </div>
 
-      {showArchiveDrawer && (
-        <div
-          className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[2px] animate-in fade-in duration-200"
-          style={{ top: '110px' }}
-          onClick={() => setShowArchiveDrawer(false)}
-        />
-      )}
+      {/* --- Backdrop (Fixed Full Screen) --- */}
+      {/* 
+          1. fixed inset-0: 覆盖全屏
+          2. backdrop-blur-sm: 确保虚化效果
+          3. bg-black/20: 稍微加深背景色，突出抽屉
+          4. z-30: 在 Drawer (z-40) 之下，在 Header (z-50) 之下? 不，Header 是 z-50，Drawer是 z-40，Backdrop 是 z-30。
+             注意：如果 Header 是透明的，Backdrop 会遮住 Header。
+             为了不遮住 Header，我们要设置 top: 112px
+      */}
+      <div
+        className={`
+          fixed inset-0 z-30 bg-black/20 backdrop-blur-[2px] transition-all duration-500
+          ${showArchiveDrawer 
+            ? "opacity-100 visible pointer-events-auto" 
+            : "opacity-0 invisible pointer-events-none"
+          }
+        `}
+        style={{ top: '112px' }}
+        onClick={() => setShowArchiveDrawer(false)}
+      />
 
-      <main className="max-w-[600px] mx-auto pb-10 relative z-30 mt-4">
+      <main className="max-w-[600px] mx-auto pb-10 relative z-20 mt-4">
         <NewsList
           news={displayItems}
           isLoading={isLoading}
