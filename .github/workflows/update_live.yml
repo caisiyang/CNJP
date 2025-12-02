@@ -28,7 +28,6 @@ jobs:
       - name: Run update script
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
         run: python scripts/update_streams.py
 
       - name: Commit and push if changed

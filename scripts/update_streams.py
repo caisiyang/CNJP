@@ -7,126 +7,165 @@ import datetime
 # Configuration
 # -------------------------------------------------------------
 yt_token = os.environ.get("YOUTUBE_" + "API_KEY")
-target_channel_id = os.environ.get("YOUTUBE_" + "CHANNEL_ID")
+CONFIG_FILE = "scripts/stream_config.json"
 OUTPUT_FILE = "public/live_data.json"
 
-# 🎯 关键修改：我们要找的关键词（按优先级排序）
-# 包含这些关键词越多，优先级越高
-TARGET_KEYWORDS = ["渋谷", "Shibuya", "Scramble", "スクランブル"]
+def load_stream_config():
+    """加载直播源配置"""
+    with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-def calculate_match_score(title):
+def calculate_match_score(title, keywords):
     """
     计算标题的匹配分数，包含的关键词越多分数越高
     """
     score = 0
-    title_lower = title.lower()  # 转为小写进行不区分大小写的匹配
+    title_lower = title.lower()
     
-    for keyword in TARGET_KEYWORDS:
+    for keyword in keywords:
         if keyword.lower() in title_lower:
             score += 1
     
     return score
 
-def get_live_stream_id(api_key, channel_id):
+def get_live_stream_for_channel(youtube, channel_id, keywords, channel_name):
+    """
+    获取指定频道的直播源
+    """
     try:
-        youtube = build("youtube", "v3", developerKey=api_key)
-
-        # 1. 获取该频道下所有的直播（YouTube API 最大值是 50）
-        # ANN 新闻台有 20+ 个直播源同时在线，必须搜索足够多
-        print(f"🔍 Searching for live streams on channel: {channel_id}...")
+        print(f"\n🔍 Searching channel: {channel_name} ({channel_id})")
+        print(f"   Keywords: {keywords}")
+        
+        # 搜索该频道的所有直播
         request = youtube.search().list(
             part="id,snippet",
             channelId=channel_id,
             eventType="live",
             type="video",
-            maxResults=50  # YouTube API 允许的最大值
+            maxResults=50
         )
         response = request.execute()
         items = response.get("items", [])
 
         if not items:
-            print("⚠️ No live stream found on this channel.")
-            return create_empty_data()
+            print(f"   ⚠️ No live streams found")
+            return None
 
-        print(f"\n📺 Found {len(items)} active streams:")
-        print("=" * 80)
+        print(f"   📺 Found {len(items)} active streams")
         
-        # 2. 为每个视频计算匹配分数
+        # 为每个视频计算匹配分数
         scored_videos = []
-        for i, video in enumerate(items, 1):
+        for video in items:
             title = video["snippet"]["title"]
             video_id = video["id"]["videoId"]
-            score = calculate_match_score(title)
+            score = calculate_match_score(title, keywords)
             
             scored_videos.append({
-                "video": video,
                 "title": title,
                 "video_id": video_id,
                 "score": score
             })
-            
-            # 打印每个视频的信息
-            print(f"{i}. {title}")
-            print(f"   Video ID: {video_id}")
-            print(f"   Match Score: {score} {'⭐' * score}")
-            print()
 
-        # 3. 按分数排序，选择分数最高的
+        # 按分数排序
         scored_videos.sort(key=lambda x: x["score"], reverse=True)
-        
-        # 4. 选择最佳匹配
         best_match = scored_videos[0]
         
         if best_match["score"] > 0:
-            print(f"✅ Selected (Best Match): {best_match['title']}")
-            print(f"   Match Score: {best_match['score']}")
+            print(f"   ✅ Best match (score {best_match['score']}): {best_match['title'][:60]}...")
         else:
-            print(f"⚠️ No keyword matches found. Using first available stream as fallback:")
-            print(f"   {best_match['title']}")
-        
-        print("=" * 80)
+            print(f"   ⚠️ No keyword match, using first available: {best_match['title'][:60]}...")
         
         return {
-            "isLive": True,
             "videoId": best_match["video_id"],
             "title": best_match["title"],
-            "matchScore": best_match["score"],
-            "lastUpdated": datetime.datetime.now().isoformat()
+            "matchScore": best_match["score"]
         }
-
+        
     except Exception as e:
-        print(f"❌ An error occurred: {e}")
-        import traceback
-        traceback.print_exc()
-        return {
-            "isLive": False,
-            "error": str(e),
-            "lastUpdated": datetime.datetime.now().isoformat()
-        }
+        print(f"   ❌ Error: {e}")
+        return None
 
-def create_empty_data():
-    return {
-        "isLive": False,
-        "videoId": None,
-        "title": None,
-        "lastUpdated": datetime.datetime.now().isoformat()
+def update_all_streams(api_key):
+    """
+    更新所有直播源
+    """
+    config = load_stream_config()
+    youtube = build("youtube", "v3", developerKey=api_key)
+    
+    results = {
+        "lastUpdated": datetime.datetime.now().isoformat(),
+        "streams": []
     }
+    
+    print("=" * 80)
+    print("🚀 Updating all live streams...")
+    print("=" * 80)
+    
+    for stream_config in config["streams"]:
+        stream_id = stream_config["id"]
+        display_name = stream_config["displayName"]
+        channel_id = stream_config["channelId"]
+        channel_name = stream_config["channelName"]
+        keywords = stream_config["keywords"]
+        
+        stream_data = get_live_stream_for_channel(
+            youtube, 
+            channel_id, 
+            keywords, 
+            channel_name
+        )
+        
+        if stream_data:
+            results["streams"].append({
+                "id": stream_id,
+                "displayName": display_name,
+                "channelName": channel_name,
+                "isLive": True,
+                "videoId": stream_data["videoId"],
+                "title": stream_data["title"],
+                "matchScore": stream_data["matchScore"]
+            })
+        else:
+            # 没有找到直播，标记为离线
+            results["streams"].append({
+                "id": stream_id,
+                "displayName": display_name,
+                "channelName": channel_name,
+                "isLive": False,
+                "videoId": None,
+                "title": None,
+                "matchScore": 0
+            })
+    
+    return results
 
 def save_to_json(data, filename):
+    """保存数据到 JSON 文件"""
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    print(f"\n💾 Data saved to {filename}")
-    print(f"📄 Content: {json.dumps(data, indent=2, ensure_ascii=False)}")
+    
+    print("\n" + "=" * 80)
+    print(f"💾 Data saved to {filename}")
+    print("=" * 80)
+    print("\n📊 Summary:")
+    for stream in data["streams"]:
+        status = "🟢 LIVE" if stream["isLive"] else "🔴 OFFLINE"
+        print(f"  {status} {stream['displayName']}")
+        if stream["isLive"]:
+            print(f"       Video ID: {stream['videoId']}")
+    print("=" * 80)
 
 if __name__ == "__main__":
-    if not yt_token or not target_channel_id:
-        raise ValueError("❌ Error: Missing configuration secrets in GitHub!")
-
-    print("🚀 Starting update script...")
-    print(f"🎯 Target Keywords: {TARGET_KEYWORDS}\n")
+    if not yt_token:
+        raise ValueError("❌ Error: Missing YouTube API key!")
     
-    data = get_live_stream_id(yt_token, target_channel_id)
-    save_to_json(data, OUTPUT_FILE)
-    
-    print("\n✨ Done.")
+    try:
+        data = update_all_streams(yt_token)
+        save_to_json(data, OUTPUT_FILE)
+        print("\n✨ Done.")
+    except Exception as e:
+        print(f"\n❌ Fatal error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
