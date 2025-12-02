@@ -1,44 +1,5 @@
 [
   {
-    "title": "中国外长请求法国在台湾问题上提供支持 - 日本首相高市的言论是“挑衅性的”（彭博社） - 雅虎！消息",
-    "title_tc": "中國外長請求法國在台灣問題上提供支持 - 日本首相高市的言論是“挑釁性的”（彭博社） - 雅虎！消息",
-    "title_ja": "中国外相、台湾問題巡りフランスに支持要請－高市首相発言「挑発的」（Bloomberg） - Yahoo!ニュース",
-    "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5ZbTQtZVVLZWdiTDVab1Z6NDlabjVuZG8zaWcxc25xNGdETzIzTEI5UTM3MS14ZVo1bkltQjJmd3dfT3pRcllHYklIXzFFNDRoaDFKNFJxSjcwUTJqM094R0hpcm5PbGRpY1VJbnlvdVJvQXZWZW5qcFR6OFJFcXM?oc=5",
-    "image": "",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
-    "summary": "",
-    "category": "时政",
-    "time_str": "11-27 23:50",
-    "timestamp": 1764255027,
-    "origin": "Yahoo!ニュース"
-  },
-  {
-    "title": "中国外长请求法国在台湾问题上提供支持 - 继续向高一施压（彭博社） - 雅虎！消息",
-    "title_tc": "中國外長請求法國在台灣問題上提供支持 - 繼續向高一施壓（彭博社） - 雅虎！消息",
-    "title_ja": "中国外相、台湾問題でフランスに支持要請－高市氏への圧力継続（Bloomberg） - Yahoo!ニュース",
-    "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9MaEFwVllfN2VYejFkRWZGd0dUSDREZ19CNUtYVXZnUEV4cFByaEctcEtuOTBJZWwyUzg5dEdkeXBzMUlZTEl3cll2NkNIZEFYb3dQQTAxZFM0SmpIR2luMUxCelZFR25ValRudUVKVGZqMDZpcjhVN2FwUWp2T00?oc=5",
-    "image": "",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
-    "summary": "",
-    "category": "时政",
-    "time_str": "11-27 23:50",
-    "timestamp": 1764255027,
-    "origin": "Yahoo!ニュース"
-  },
-  {
-    "title": "中国外长请求法国在台湾问题上提供支持 - 日本首相高市的言论“具有挑衅性” - Bloomberg.co.jp",
-    "title_tc": "中國外長請求法國在台灣問題上提供支持 - 日本首相高市的言論“具有挑釁性” - Bloomberg.co.jp",
-    "title_ja": "中国外相、台湾問題でフランスに支持要請－高市首相発言｢挑発的｣ - Bloomberg.co.jp",
-    "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE01V3h5WERZYU5XckdWWDd1LU1mOXRNVXdnOTRTd2VjLTVfaXdlZHhiQzI3ZGJuTXJYS1NPeHdXengzUER6cWpuZlBRY21Ud0E0bEtvSGxpYm5kUjZPNVBwUFpIQzZBSzA1VW9jTEFxTEtFNU9ldEE?oc=5",
-    "image": "",
-    "logo": "https://www.google.com/s2/favicons?domain=www.bloomberg.co.jp&sz=128",
-    "summary": "",
-    "category": "时政",
-    "time_str": "11-27 23:50",
-    "timestamp": 1764255027,
-    "origin": "Bloomberg.co.jp"
-  },
-  {
     "title": "中方再次要求日方加快处置废弃化武",
     "origin": "中国、日本に遺棄化学兵器の処理加速を改めて要求 - 新華網日本語",
     "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9BN21KbnNiLVZIaEZJRzQxZHppZ2FxdUNyQnczSkhRb1VQQ0paTldDbkJLaUpUSkswb1lRclFHNEhYamdNSE5rLU91X3FfVzZfU05uSVByMmJmcFdGNjlYV2s5N2hrVVdCYWVMLXhEcW5YZjBJM2c?oc=5",
@@ -46,7 +7,8 @@
     "timestamp": 1764247695.0,
     "image": "",
     "title_tc": "中形的重複請求請求",
-    "logo": "https://www.google.com/s2/favicons?domain=news.google.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.google.com&sz=128",
+    "category": "其他"
   },
   {
     "title": "“中国人应该离开！”“反华”示威在韩国蔓延……有人说“我嫉妒日本”。随着团体游客免签，中国游客数量增加。",
@@ -56,7 +18,8 @@
     "timestamp": 1764239069.0,
     "image": "",
     "title_tc": "“中國人要走了！” “反華”示威在韓國蔓延……“我嫉妒日本”。赴華旅遊人數有所增加。",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "其他"
   },
   {
     "title": "“中国人应该离开！”韩国反华示威蔓延……有人说“我嫉妒日本”。团体游客免签增加了中国游客数量 - 雅虎！消息",
@@ -79,7 +42,8 @@
     "timestamp": 1764237783.0,
     "image": "",
     "title_tc": "蘋果“同人”、中國“雙十一”智能機數量",
-    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
+    "category": "经济"
   },
   {
     "title": "美国外交杂志指出，“高市早苗实际上可能正在享受与中国的冲突”（Courier Japon） - 雅虎！消息",
@@ -102,7 +66,8 @@
     "timestamp": 1764236762.0,
     "image": "",
     "title_tc": "永旺在中國開發了一種新型大型閘機，沒有本地客戶服務（合資公司）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "其他"
   },
   {
     "title": "一艘游轮从香港停靠后，约 3,900 名中国游客前往日本。当被问及令人不寒而栗的中日关系时......“现在据说日本不安全，但我根本不这么认为。”“如果中国大陆的人不来，香港人就会来。”“如果他们来了，那就完全相反了。”（BSS山阴放送）",
@@ -112,7 +77,8 @@
     "timestamp": 1764235033.0,
     "image": "",
     "title_tc": "船停靠香港後，約3900名乘客前往中國和日本。這是中日人民不冷、中日人民不安全的時候……“日本目前的情況不安全，但我明白，這樣做是不可能的。”",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "社会"
   },
   {
     "title": "“特朗普建议不要在台湾问题上激怒中国”，内阁官房长官木原称“事实并非如此”",
@@ -122,7 +88,8 @@
     "timestamp": 1764234300.0,
     "image": "",
     "title_tc": "“中國對台灣在台灣的問題感到憤怒，”內閣辦公室主任木原說，“但事實並非如此。”",
-    "logo": "https://www.google.com/s2/favicons?domain=www.yomiuri.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=www.yomiuri.co.jp&sz=128",
+    "category": "时政"
   },
   {
     "title": "四分之一的中国企业出现今年一月至九月以来最严重的亏损，房地产和太阳能行业陷入低迷",
@@ -132,7 +99,8 @@
     "timestamp": 1764234000.0,
     "image": "",
     "title_tc": "中國企業四季度增長創今年1-9月以來最嚴重增幅 行業工業產值大幅下滑",
-    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128",
+    "category": "经济"
   },
   {
     "title": "四分之一的中国企业出现今年一月至九月以来最严重的房地产和太阳能衰退 - 日本经济新闻",
@@ -155,7 +123,8 @@
     "timestamp": 1764232021.0,
     "image": "",
     "title_tc": "內閣官房長官木原否認“不必要且激烈的中國建設”，Bikoku 報告“這一事實不存在”（NTV NEWS NNN）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "时政"
   },
   {
     "title": "日美首脑会谈官房长官：美国总统建议中国不要激怒中国的说法并不属实",
@@ -165,7 +134,8 @@
     "timestamp": 1764230790.0,
     "image": "",
     "title_tc": "日本美容協會辦公室主任：國美不必，華語不屬於法律。",
-    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
+    "category": "时政"
   },
   {
     "title": "中日航线航班陆续取消，中国游客在日本各地机场陆续回国 - 法新社",
@@ -188,7 +158,8 @@
     "timestamp": 1764226972.0,
     "image": "",
     "title_tc": "政治衝突中，永旺落戶中國龍沙發展中心進行新採購",
-    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128",
+    "category": "时政"
   },
   {
     "title": "应避免前往日本旅行的要求，减少成田机场飞往中国的航班（共同社）",
@@ -198,7 +169,8 @@
     "timestamp": 1764226008.0,
     "image": "",
     "title_tc": "要求在撤離前前往日本，減少成田機場飛往中國的航班（共同社）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "社会"
   },
   {
     "title": "【影响】中方呼吁民众不要赴日旅游，大阪部分酒店出现多起取消订单 大阪府观光局（读卖电视台）",
@@ -208,7 +180,8 @@
     "timestamp": 1764224820.0,
     "image": "",
     "title_tc": "【影響】不必要的中國一日遊、大阪部分酒類專賣店取消 大阪府觀光局（觀光局）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "社会"
   },
   {
     "title": "【影响】因中国呼吁民众不要前往日本旅游，大阪部分酒店出现多起取消预订 大阪观光局（读卖电视台） - 雅虎！消息",
@@ -231,7 +204,7 @@
     "image": "",
     "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
     "summary": "",
-    "category": "时政",
+    "category": "社会",
     "time_str": "11-27 14:57",
     "timestamp": 1764223021,
     "origin": "Yahoo!ニュース"
@@ -244,7 +217,8 @@
     "timestamp": 1764221520.0,
     "image": "",
     "title_tc": "中國廣東省餘裕市的沖壓機廠已倒閉。",
-    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128",
+    "category": "经济"
   },
   {
     "title": "中国“不出门”有何影响？广岛只有6.4%的客人来自中国；影响虽有限，但仍有令人担忧的理由（新广岛电视台）",
@@ -254,7 +228,8 @@
     "timestamp": 1764219577.0,
     "image": "",
     "title_tc": "中國“不退出門”有何影響？只有6.4%的客人來過中國；來華遊客數量有限，但來華人數多的原因（新廣島電視台）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
+    "category": "其他"
   },
   {
     "title": "特朗普要求日本首相高市不要在台湾问题上激怒中国",
@@ -264,7 +239,8 @@
     "timestamp": 1764216699.0,
     "image": "",
     "title_tc": "中方對日本首相高一不必要地駐台問題表示憤怒",
-    "logo": "https://www.google.com/s2/favicons?domain=mainichi.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=mainichi.jp&sz=128",
+    "category": "时政"
   },
   {
     "title": "中方要求美方克制日本《人民日报》就首相高市涉台言论发表评论",
@@ -274,7 +250,8 @@
     "timestamp": 1764210420.0,
     "image": "",
     "title_tc": "中國要求美容管制制度 日本《人民日》首相涶台諾發表論",
-    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
+    "category": "时政"
   },
   {
     "title": "中方呼吁美国遏制日本；人民日报就首相高市涉台言论发表评论 - 路透",
@@ -297,7 +274,8 @@
     "timestamp": 1764208080.0,
     "image": "",
     "title_tc": "中國總理高城需要憤怒",
-    "logo": "https://www.google.com/s2/favicons?domain=www.asahi.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=www.asahi.com&sz=128",
+    "category": "时政"
   },
   {
     "title": "美国报纸报道特朗普总统建议高市首相不要激怒中国 - 朝日新闻",
@@ -320,20 +298,8 @@
     "timestamp": 1764206512.0,
     "image": "",
     "title_tc": "美國報紙報導報導評論、特別推進日本首相高層城市疏散刺激中國",
-    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128"
-  },
-  {
-    "title": "中国驻日本大使馆发帖敦促人们不要前往日本，“日本公共安全持续恶化”，但未提及具体病例或病例数量 - 产经新闻",
-    "title_tc": "中國駐日本大使館發帖敦促人們不要前往日本，“日本公共安全持續惡化”，但未提及具體病例或病例數量 - 產經新聞",
-    "title_ja": "在日中国大使館、訪日自粛促す投稿「日本の治安が引き続き悪化」 具体例や件数など触れず - 産経ニュース",
-    "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBpdU5HUERQM09tNEFpUVhWUXZleU9zNzd3eVNrN3A5cnRHSmptcmxaTk9QOWhfMVRaSmVNWnkyamNrZ1RnTFo1Ulp0Uzd5bHhxUXZuSnZ0VW9weUEySWZjNVhWUkhRSHFTZkpSZlJjQnVWU1prdEE?oc=5",
-    "image": "",
-    "logo": "https://www.google.com/s2/favicons?domain=www.sankei.com&sz=128",
-    "summary": "",
-    "category": "时政",
-    "time_str": "11-27 10:00",
-    "timestamp": 1764205223,
-    "origin": "産経ニュース"
+    "logo": "https://www.google.com/s2/favicons?domain=www.nikkei.com&sz=128",
+    "category": "时政"
   },
   {
     "title": "特朗普建议日本首相高市不要在台湾问题上激怒中国 = WSJ",
@@ -343,7 +309,8 @@
     "timestamp": 1764202020.0,
     "image": "",
     "title_tc": "中國總理高一對台灣問題感到憤怒 = WSJ",
-    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
+    "category": "时政"
   },
   {
     "title": "特朗普建议日本首相高市不要在台湾问题上激怒中国 = WSJ - 路透",
@@ -366,20 +333,8 @@
     "timestamp": 1764201600.0,
     "image": "",
     "title_tc": "中國：“在日生活要謹慎”，出行不要重複打電話SNS（共同社）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
-  },
-  {
-    "title": "中国再次警告访问日本的侮辱和攻击 - 雅虎！消息",
-    "title_tc": "中國再次警告訪問日本的侮辱和攻擊 - 雅虎！消息",
-    "title_ja": "中国側が訪日に再警告 侮辱や暴行 - Yahoo!ニュース",
-    "link": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1HWEFBMXRxeEd1VFFYNGthdE4ySjRFaVV1aEhmMnc0azI3Wk1JMmw3Vk12eE5vM29WR3NEejExSEdxSmlVVEpPcmZEWjhkc1Fh?oc=5",
-    "image": "",
     "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
-    "summary": "",
-    "category": "其他",
-    "time_str": "11-27 08:47",
-    "timestamp": 1764200866,
-    "origin": "Yahoo!ニュース"
+    "category": "其他"
   },
   {
     "title": "特朗普建议高市不要在台湾问题上激怒中国 - 华尔街日报（彭博社） - 雅虎！消息",
@@ -402,7 +357,8 @@
     "timestamp": 1764200700.0,
     "image": "",
     "title_tc": "中方對日本首相高城無需留台問題感到憤怒 - 淮街日報",
-    "logo": "https://www.google.com/s2/favicons?domain=www.bloomberg.co.jp&sz=128"
+    "logo": "https://www.google.com/s2/favicons?domain=www.bloomberg.co.jp&sz=128",
+    "category": "时政"
   },
   {
     "title": "特朗普总统建议日本首相高市不要在台湾问题上激怒中国 - 华尔街日报 - Bloomberg.co.jp",
@@ -425,45 +381,7 @@
     "timestamp": 1764200460.0,
     "image": "",
     "title_tc": "中國“旅日中國公民的犯罪活動”，日本否認“商州逮捕5人”（TBS NEWS DIG Powered by JNN）",
-    "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128"
-  },
-  {
-    "title": "中国同意欧盟推动解决荷兰网络之外的 Nexperia 问题 - 路透",
-    "title_tc": "中國同意歐盟推動解決荷蘭網絡外的 Nexperia 問題 - 路透",
-    "title_ja": "ネクスペリア問題、中国がＥＵと解決促進で合意 オランダ蚊帳の外 - Reuters",
-    "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNSnlSYnRuZzgzR1BEMFJPR1Byb0NoY01iS2VFc1k4dVotbG9wMm1LLXVNcnpYOTVmREdZVjRvc3FUMVVTTkU1MU42MThCS1owVWlQemZkVmVacG9TOFZpZTFSV3Bqc3BJN204WnRHSDB2T3BWeVNvdE02cUFRVWtWNA?oc=5",
-    "image": "",
-    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
-    "summary": "",
-    "category": "其他",
-    "time_str": "11-27 07:30",
-    "timestamp": 1764196232,
-    "origin": "Reuters"
-  },
-  {
-    "title": "中国再次警告不要前往日本“据报道有数人因侮辱和袭击而受伤” - 路透中文网",
-    "title_tc": "中國再次警告不要前往日本“據報導有數人因侮辱和襲擊而受傷” - 路透中文網",
-    "title_ja": "中国、日本渡航に再警告 「侮辱や暴行で複数の負傷報告」 - Reuters",
-    "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBCeDI1XzRjeWg5bmNJZ0NFWmpzTlQtN3IzcmZWZVZLdmpmVkVVLUo3WXhrTmFVY3NzX1VRdEVuV3g4am55djZUd3F0RWlGSmt2elZxSG10U1B6OGpHZkJNNzNJNEZCMGpPUWFxSWoxMGFXM1QwQ3BBOFlOdkpPZw?oc=5",
-    "image": "",
-    "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
-    "summary": "",
-    "category": "其他",
-    "time_str": "11-27 00:46",
-    "timestamp": 1764171974,
-    "origin": "Reuters"
-  },
-  {
-    "title": "中国再次警告不要前往日本“据报道有数人因侮辱和袭击而受伤”（路透社） - 雅虎！消息",
-    "title_tc": "中國再次警告不要前往日本“據報導有數人因侮辱和襲擊而受傷”（路透社） - 雅虎！消息",
-    "title_ja": "中国、日本渡航に再警告 「侮辱や暴行で複数の負傷報告」（ロイター） - Yahoo!ニュース",
-    "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBnTU41aU0xblpuWjV6UUhNVVRWSERqVzVyY0VMUFByQ2F0ZUs4WHlmSEFVYkoxSWs0T2hDcVBLTmUzSHVsQmRSU0hiREE4cmwtTEM1RndkZkNnZE1wS1RtUHB1bDRtWjc5VU9sTU5Fa29vVU0yZGdsQ3JxaGFjYVU?oc=5",
-    "image": "",
     "logo": "https://www.google.com/s2/favicons?domain=news.yahoo.co.jp&sz=128",
-    "summary": "",
-    "category": "其他",
-    "time_str": "11-27 00:46",
-    "timestamp": 1764171974,
-    "origin": "Yahoo!ニュース"
+    "category": "社会"
   }
 ]

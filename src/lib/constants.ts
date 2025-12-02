@@ -1,10 +1,11 @@
 export const CATEGORIES = [
     { key: "all", label: "全部", color: "all" },
     { key: "politics", label: "时政", color: "politics" },
+    { key: "military", label: "军事", color: "military" }, // ✅ 新增
     { key: "economy", label: "经济", color: "economy" },
     { key: "society", label: "社会", color: "society" },
     { key: "entertainment", label: "娱乐", color: "entertainment" },
-    { key: "tech", label: "科技", color: "tech" },
+    // ❌ 已删除 科技
     { key: "sports", label: "体育", color: "sports" },
     { key: "other", label: "其他", color: "other" },
 ] as const;
@@ -13,23 +14,25 @@ export type CategoryKey = typeof CATEGORIES[number]["key"];
 
 export const CATEGORY_MAP: Record<string, string> = {
     '时政': 'politics', '政治': 'politics',
+    '军事': 'military', // ✅ 新增
     '经济': 'economy',
     '社会': 'society',
     '娱乐': 'entertainment',
-    '科技': 'tech', 'IT': 'tech',
+    // ❌ 已删除 科技
     '体育': 'sports',
     '其他': 'other'
 };
 
 export const CATEGORY_DOT_COLORS: Record<string, string> = {
     "politics": "bg-red-500",
+    "military": "bg-orange-600", // ✅ 新增：军事类别使用深橙色/军橙色
     "economy": "bg-emerald-500",
     "society": "bg-amber-500",
     "entertainment": "bg-pink-500",
-    "tech": "bg-sky-500",
+    // ❌ 已删除 tech
     "sports": "bg-indigo-500",
     "other": "bg-gray-400",
-    "all": "bg-gray-900" // Default for 'all' if needed, though usually hidden or special
+    "all": "bg-gray-900" 
 };
 
 export const MEDIA_LOGOS: Record<string, string> = {

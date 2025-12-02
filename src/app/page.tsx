@@ -11,7 +11,7 @@ import FavModal from "@/components/modals/FavModal";
 import ArchiveModal from "@/components/modals/ArchiveModal";
 import ArchiveDrawer from "@/components/ArchiveDrawer";
 import BackToTop from "@/components/BackToTop";
-import { Search, Loader2, X } from "lucide-react";
+import { Search, Loader2, X, Flame } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { CATEGORY_MAP, CATEGORIES } from "@/lib/constants";
 
@@ -29,10 +29,126 @@ export default function Home() {
 
   // UI State
   const [currentFilter, setCurrentFilter] = useState("all");
-  const [searchInput, setSearchInput] = useState(""); // Immediate input value
-  const [searchQuery, setSearchQuery] = useState(""); // Debounced search query
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(25);
   const [showArchiveDrawer, setShowArchiveDrawer] = useState(false);
+
+  // --- Smart Search Suggestions Logic ---
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  // SECTION 1: Manual Trending Keywords (User-curated)
+  const trendingNow = ["高市", "滨崎步", "台湾"];
+  const TC_MAP: Record<string, string> = {
+    "高市": "高市",
+    "滨崎步": "濱崎步",
+    "台湾": "台灣"
+  };
+
+  // SECTION 2: Hot Keywords (Auto-extracted, 15 results)
+  const hotKeywords = useMemo(() => {
+    if (!rawNewsData || rawNewsData.length === 0) return [];
+
+    const STOP_WORDS = new Set([
+      "的", "了", "是", "在", "和", "有", "我", "这", "就", "不", "人", "都", "一", "一个", "上", "也", "很", "到", "说", "要", "去", "你", "会", "着", "没有", "看", "怎么", "还是", "或者", "因为", "所以", "如果", "那个", "这个",
+      "可以", "已经", "通过", "进行", "表示", "认为", "指出", "提到", "称", "显示", "发现", "介绍", "宣布", "透露", "强调",
+      "日本", "中国", "消息", "报道", "新闻", "日媒", "韩媒", "发布", "推出"
+    ]);
+
+    const SOURCE_BLACKLIST = new Set([
+      "日本经济新闻", "日经", "产经新闻", "日刊体育", "共同社", "路透", "路透中文网", "路透社", "朝日电视台", "朝日新闻", "每日新闻", "东洋经济", "钻石在线", "中央日报", "时事网", "时事通讯社",
+      "Yahoo", "Yahoo!ニュース", "TBS", "Bloomberg", "BBC", "CNN", "NHK", "ニュース", "ライブドア", "Livedoor", "在线", "中文版", "数字版"
+    ]);
+
+    const wordCounts: Record<string, number> = {};
+    const segmenter = new Intl.Segmenter('zh-CN', { granularity: 'word' });
+
+    rawNewsData.forEach(item => {
+      if (!item.title) return;
+
+      const cleanTitle = item.title.trim();
+      const segments = segmenter.segment(cleanTitle);
+
+      for (const { segment, isWordLike } of segments) {
+        if (!isWordLike) continue;
+
+        const word = segment.trim();
+
+        if (
+          word.length < 2 ||
+          STOP_WORDS.has(word) ||
+          SOURCE_BLACKLIST.has(word) ||
+          /^\d+$/.test(word) ||
+          /^\d+月$/.test(word) ||
+          /^\d{4}$/.test(word) ||
+          /^[a-zA-Z]+$/.test(word)
+        ) {
+          continue;
+        }
+
+        const weight = word.length >= 3 ? 1.5 : 1;
+        wordCounts[word] = (wordCounts[word] || 0) + weight;
+      }
+    });
+
+    return Object.entries(wordCounts)
+      .sort(([wordA, a], [wordB, b]) => {
+        if (b !== a) return b - a;
+        return wordB.length - wordA.length;
+      })
+      .slice(0, 15)
+      .map(([word]) => word);
+  }, [rawNewsData]);
+
+  // SECTION 3: Hot Sources (Chinese source names from titles, 10 results)
+  const hotSources = useMemo(() => {
+    if (!rawNewsData || rawNewsData.length === 0) return [];
+
+    const SOURCE_NAMES = new Set([
+      "雅虎新闻", "雅虎", "共同社", "路透社", "路透", "产经新闻", "日本经济新闻", "日经新闻", "朝日新闻", "每日新闻",
+      "读卖新闻", "时事通信", "时事通讯社", "日刊体育", "东洋经济", "钻石在线", "中央日报", "朝日电视台",
+      "NHK", "TBS", "东京新闻", "富士电视台", "产经体育", "体育日报"
+    ]);
+
+    const sourceCounts: Record<string, number> = {};
+
+    rawNewsData.forEach(item => {
+      if (!item.title) return;
+
+      const cleanTitle = item.title.trim();
+
+      SOURCE_NAMES.forEach(sourceName => {
+        if (cleanTitle.includes(sourceName)) {
+          sourceCounts[sourceName] = (sourceCounts[sourceName] || 0) + 1;
+        }
+      });
+    });
+
+    return Object.entries(sourceCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([source]) => source);
+  }, [rawNewsData]);
+
+  const handleSuggestionClick = (keyword: string) => {
+    handleSearchInput(keyword);
+    setShowSuggestions(false);
+  };
+
+  // Close suggestions on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        // Do nothing here, backdrop handles the close
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Modals
   const [showSettings, setShowSettings] = useState(false);
@@ -131,7 +247,7 @@ export default function Home() {
   const handleTouchEnd = async () => {
     if (pullCurrentY > PULL_THRESHOLD) {
       setIsRefreshing(true);
-      await fetchData(false); // Refresh data without full screen loading
+      await fetchData(false);
       setIsRefreshing(false);
     }
     setPullStartY(0);
@@ -149,12 +265,10 @@ export default function Home() {
   const handleSearchInput = useCallback((val: string) => {
     setSearchInput(val);
 
-    // Clear existing timeout
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    // Set new timeout (500ms debounce)
     searchTimeoutRef.current = setTimeout(() => {
       setSearchQuery(val.trim());
       setVisibleCount(25);
@@ -258,10 +372,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* 
-          1. Header + Utility Bar (Static Flow)
-          Zone A + B
-      */}
       <Header
         onOpenFav={() => setShowFav(true)}
         onOpenAbout={() => setShowAbout(true)}
@@ -270,25 +380,113 @@ export default function Home() {
         favCount={favorites.length}
       >
         {/* Utility Bar (Search & Archive) */}
-        <div className="flex justify-between items-center gap-3">
-          {/* Search Input - Left/Center */}
-          <div className="relative flex-1">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-[#999] pointer-events-none z-10" />
-            <input
-              type="text"
-              value={searchInput}
-              placeholder={settings.lang === "sc" ? "搜索..." : "搜尋..."}
-              className="w-full py-1.5 pl-6 pr-7 rounded-xl border border-black/10 dark:border-white/10 bg-gray-50 dark:bg-[#2c2c2c] text-[13px] outline-none text-[var(--text-main)] transition-all focus:bg-white focus:shadow-md focus:border-[var(--primary)]"
-              style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
-              onChange={(e) => handleSearchInput(e.target.value)}
-            />
-            {searchInput && (
-              <button
-                onClick={handleClearSearch}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-              >
-                <X className="w-3 h-3 text-[#999]" />
-              </button>
+        <div className="flex justify-between items-center gap-3 relative z-50">
+          {/* Search Input - Minimalist Underline Style */}
+          <div
+            ref={searchContainerRef}
+            className="flex-1 relative"
+          >
+            <div className="flex items-center gap-2 border-b border-gray-300 dark:border-gray-700 focus-within:border-gray-800 dark:focus-within:border-gray-200 transition-colors duration-300 pb-1">
+              <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
+              <input
+                type="text"
+                value={searchInput}
+                placeholder={settings.lang === "sc" ? "搜索..." : "搜尋..."}
+                className="flex-1 bg-transparent border-none focus:ring-0 placeholder-gray-400 text-gray-700 dark:text-gray-200 text-sm p-0 outline-none"
+                onChange={(e) => handleSearchInput(e.target.value)}
+                onFocus={() => setShowSuggestions(true)}
+              />
+              {searchInput && (
+                <button
+                  onClick={handleClearSearch}
+                  className="p-0.5 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors flex-shrink-0"
+                >
+                  <X className="w-3 h-3 text-gray-400" />
+                </button>
+              )}
+            </div>
+
+            {/* Smart Search Suggestions Drawer - 3 Sections with Underlined Text */}
+            {showSuggestions && (trendingNow.length > 0 || hotKeywords.length > 0 || hotSources.length > 0) && !searchInput && (
+              <div className="absolute top-full left-0 w-full mt-2 bg-white/95 dark:bg-[#1e1e1e]/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100 dark:border-white/5 p-3 animate-in slide-in-from-top-2 fade-in duration-200 z-50 max-w-xl">
+
+                {/* SECTION 1: Trending Now (Manual) */}
+                {trendingNow.length > 0 && (
+                  <div className="mb-2.5">
+                    <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 flex items-center gap-1">
+                      {settings.lang === "sc" ? "当下最热" : "當下最熱"}
+                      <Flame className="w-3 h-3 text-red-500 fill-red-500" />
+                    </div>
+                    <div className="leading-relaxed text-sm">
+                      {trendingNow.map((keyword, index) => (
+                        <span key={keyword}>
+                          <button
+                            onClick={() => handleSuggestionClick(keyword)}
+                            className="text-gray-800 dark:text-gray-200 text-[13px] underline decoration-gray-300 dark:decoration-gray-600 underline-offset-2 hover:text-red-500 hover:decoration-red-500 dark:hover:text-red-400 dark:hover:decoration-red-400 transition-colors font-medium"
+                          >
+                            {settings.lang === "sc" ? keyword : (TC_MAP[keyword] || keyword)}
+                          </button>
+                          {index < trendingNow.length - 1 && <span className="text-gray-300 dark:text-gray-600 mx-2">·</span>}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Divider 1 */}
+                {trendingNow.length > 0 && hotKeywords.length > 0 && (
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-2.5"></div>
+                )}
+
+                {/* SECTION 2: Hot Topics (Auto, 15 results) */}
+                {hotKeywords.length > 0 && (
+                  <div className="mb-2.5">
+                    <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+                      {settings.lang === "sc" ? "热门话题" : "熱門話題"}
+                    </div>
+                    <div className="leading-relaxed">
+                      {hotKeywords.map((keyword, index) => (
+                        <span key={keyword}>
+                          <button
+                            onClick={() => handleSuggestionClick(keyword)}
+                            className="text-gray-700 dark:text-gray-300 text-[12px] underline decoration-gray-300 dark:decoration-gray-600 underline-offset-2 hover:text-red-500 hover:decoration-red-500 dark:hover:text-red-400 dark:hover:decoration-red-400 transition-colors"
+                          >
+                            {keyword}
+                          </button>
+                          {index < hotKeywords.length - 1 && <span className="text-gray-300 dark:text-gray-600 mx-1.5">·</span>}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Divider 2 */}
+                {hotKeywords.length > 0 && hotSources.length > 0 && (
+                  <div className="border-t border-gray-200 dark:border-gray-700 my-2.5"></div>
+                )}
+
+                {/* SECTION 3: Hot Sources (Auto, 10 results) */}
+                {hotSources.length > 0 && (
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5">
+                      {settings.lang === "sc" ? "热门来源" : "熱門來源"}
+                    </div>
+                    <div className="leading-relaxed">
+                      {hotSources.map((source, index) => (
+                        <span key={source}>
+                          <button
+                            onClick={() => handleSuggestionClick(source)}
+                            className="text-gray-600 dark:text-gray-400 text-[11px] underline decoration-gray-300 dark:decoration-gray-600 underline-offset-2 hover:text-red-500 hover:decoration-red-500 dark:hover:text-red-400 dark:hover:decoration-red-400 transition-colors"
+                          >
+                            {source}
+                          </button>
+                          {index < hotSources.length - 1 && <span className="text-gray-300 dark:text-gray-600 mx-1.5">·</span>}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -305,7 +503,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* CategoryNav (Zone C) - Now inside Header for unified sticky behavior */}
+        {/* CategoryNav */}
         <CategoryNav currentFilter={currentFilter} onFilterChange={handleFilterChange} />
       </Header>
 
@@ -327,18 +525,13 @@ export default function Home() {
       {showArchiveDrawer && (
         <div
           className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[2px] animate-in fade-in duration-200"
-          style={{ top: '110px' }} // Approximate header height to start below it
+          style={{ top: '110px' }}
           onClick={() => setShowArchiveDrawer(false)}
         />
       )}
 
-      {/* 
-          2. Content Module (Zone C + D)
-          Contains NewsList (CategoryNav moved to Header)
-      */}
+      {/* Content Module */}
       <main className="max-w-[600px] mx-auto pb-10 relative z-30 mt-4">
-
-        {/* News List (Zone D) */}
         <NewsList
           news={displayItems}
           isLoading={isLoading}
@@ -349,18 +542,16 @@ export default function Home() {
           archiveData={archiveData}
         />
 
-        {/* Empty state after search */}
+        {/* Empty state */}
         {!isLoading && searchQuery && filteredItems.length === 0 && (
           <div className="px-4 py-16 text-center">
-            <p
-              className="text-base text-gray-500 dark:text-gray-400"
-            >
+            <p className="text-base text-gray-500 dark:text-gray-400">
               {settings.lang === "sc" ? "本次没搜到结果，换个关键词试试吧。" : "本次沒搜到結果，換個關鍵詞試試吧。"}
             </p>
           </div>
         )}
 
-        {/* Loading */}
+        {/* Loading more */}
         {!isLoading && visibleCount < filteredItems.length && (
           <div className="text-center py-8 text-[var(--text-sub)] text-sm">
             Loading...
@@ -368,7 +559,6 @@ export default function Home() {
         )}
       </main>
 
-      {/* Back To Top Button */}
       <BackToTop />
 
       {/* Modals */}
@@ -394,6 +584,14 @@ export default function Home() {
         onToggleFav={handleToggleFav}
         currentFilter={currentFilter}
       />
+
+      {/* Search Suggestions Backdrop - Low z-index to stay behind Header (z-50) but cover content */}
+      {showSuggestions && (trendingNow.length > 0 || hotKeywords.length > 0 || hotSources.length > 0) && !searchInput && (
+        <div
+          className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setShowSuggestions(false)}
+        />
+      )}
     </div>
   );
 }

@@ -67,7 +67,7 @@ export default function Header({
           >
             {/* Logo Image */}
             <div
-              className="relative w-10 h-10 rounded-lg overflow-hidden transition-all"
+              className="relative w-8 h-8 rounded-lg overflow-hidden transition-all"
               style={icon3DStyle} // 应用立体阴影
             >
               <Image

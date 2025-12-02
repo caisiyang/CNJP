@@ -21,6 +21,21 @@ export const metadata: Metadata = {
   title: "China News from Japan | 从日本看中国",
   description: "100条日媒最新发布的中国新闻聚合",
   manifest: "/manifest.json",
+  
+  // ✅ iOS 桌面标题配置
+  appleWebApp: {
+    capable: true,
+    title: "从日本看中国", 
+    statusBarStyle: "default",
+  },
+
+  // ✅ iOS 图标配置：直接指向 logo.png
+  icons: {
+    icon: "/favicon.ico", 
+    apple: [
+      { url: "/logo.png" }, // iPhone 会自动把大图缩放成适合它的大小
+    ],
+  },
 };
 
 export const viewport: Viewport = {
