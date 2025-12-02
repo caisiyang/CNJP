@@ -12,6 +12,24 @@
   --primary: #c62828;
   --accent: #d32f2f;
   --background: #f5f7fa;
+  --card: #ffffff;
+  --text-main: #1f2937;
+  --text-sub: #6b7280;
+  --text-aux: #9ca3af;
+  --border: #e5e7eb;
+}
+
+.dark {
+  /* Classic Dark Mode - Refined */
+  --background: #121212;
+  --card: #1e1e1e;
+  --text-main: #e4e4e7;
+  /* Gray-200 */
+  --text-sub: #9ca3af;
+  /* Gray-400 */
+  --text-aux: #71717a;
+  --border: rgba(255, 255, 255, 0.05);
+  /* white/5 */
 }
 
 .shadow-card {

@@ -53,8 +53,8 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
               className={`
                 relative h-full flex items-center gap-1.5 text-[13px] font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 px-2.5 rounded-full
                 ${isActive
-                  ? "bg-white dark:bg-[#2c2c2c] text-gray-900 dark:text-gray-100 shadow-sm"
-                  : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5"
+                  ? "bg-white dark:bg-card text-gray-900 dark:text-gray-200 shadow-sm dark:shadow-none dark:border dark:border-white/5"
+                  : "text-gray-500 dark:text-sub hover:text-gray-700 dark:hover:text-main hover:bg-black/5 dark:hover:bg-white/5"
                 }
               `}
             >

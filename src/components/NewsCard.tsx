@@ -79,7 +79,7 @@ export default function NewsCard({
     <>
       <div
         onClick={() => setIsModalOpen(true)}
-        className="w-full bg-white dark:bg-[#2c2c2c] p-4 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-transparent group relative overflow-hidden"
+        className="w-full bg-white dark:bg-card p-4 rounded-xl shadow-md dark:shadow-none hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-transparent dark:border-white/5 group relative overflow-hidden"
       >
         {/* Top Row: Category | Source • Time ... Fav */}
         <div className="flex items-center justify-between mb-2">
@@ -93,7 +93,7 @@ export default function NewsCard({
               className="flex items-center gap-1.5 group/cat"
             >
               <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
-              <span className="text-gray-500 dark:text-gray-400 group-hover/cat:text-gray-900 dark:group-hover/cat:text-gray-200 transition-colors font-medium">
+              <span className="text-gray-500 dark:text-sub group-hover/cat:text-gray-900 dark:group-hover/cat:text-gray-200 transition-colors font-medium">
                 {displayCategory}
               </span>
             </button>
@@ -128,7 +128,7 @@ export default function NewsCard({
             onClick={(e) => onToggleFav && onToggleFav(e, item)}
             className={`p-2.5 rounded-full transition-all active:scale-90 ${isFav
               ? "text-[var(--primary)] bg-red-50 dark:bg-red-900/20"
-              : "text-gray-300 hover:text-[var(--primary)] hover:bg-gray-50 dark:hover:bg-gray-800"
+              : "text-gray-300 hover:text-[var(--primary)] hover:bg-gray-50 dark:hover:bg-white/5"
               }`}
           >
             <Heart className={`w-4 h-4 ${isFav ? "fill-current" : ""}`} />
@@ -161,13 +161,13 @@ export default function NewsCard({
 
           {/* 2. Japanese Title - Smaller (text-sm) */}
           {item.title_ja && (
-            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+            <h3 className="text-sm font-medium text-gray-500 dark:text-sub leading-relaxed">
               {item.title_ja}
             </h3>
           )}
 
           {/* 3. Source & Time - Smaller (text-xs) */}
-          <div className="flex items-center gap-3 text-xs text-[var(--text-sub)] pb-2 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-3 text-xs text-[var(--text-sub)] pb-2 border-b border-gray-100 dark:border-border">
             <span className="font-medium">{item.origin}</span>
             <span>•</span>
             <span>{timeDisplay}</span>
@@ -180,7 +180,7 @@ export default function NewsCard({
               onClick={(e) => onToggleFav && onToggleFav(e, item)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${isFav
                 ? "bg-red-50 dark:bg-red-900/20 text-red-500"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                : "bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-sub hover:bg-gray-200 dark:hover:bg-white/10"
                 }`}
             >
               <Heart className={`w-3.5 h-3.5 ${isFav ? "fill-current" : ""}`} />
@@ -190,7 +190,7 @@ export default function NewsCard({
             {/* Middle: Category Tag Button */}
             <button
               onClick={handleCategoryClick}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-sub text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
             >
               <Tag className="w-3.5 h-3.5" />
               <span>{displayCategory}</span>

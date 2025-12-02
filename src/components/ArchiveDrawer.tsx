@@ -89,7 +89,7 @@ export default function ArchiveDrawer({ archiveData, onSelectDate, isOpen }: Arc
                 {/* Scrollable Date List */}
                 <div
                     ref={containerRef}
-                    className="max-h-[144px] overflow-y-auto border-y border-gray-100 dark:border-gray-800/50 custom-scrollbar"
+                    className="max-h-[144px] overflow-y-auto border-y border-gray-100 dark:border-border custom-scrollbar"
                 >
                     {sortedDates.map((dateStr) => {
                         const newsCount = archiveData[dateStr]?.length || 0;
@@ -101,7 +101,7 @@ export default function ArchiveDrawer({ archiveData, onSelectDate, isOpen }: Arc
                                 key={dateStr}
                                 onClick={() => onSelectDate(dateStr)}
                                 style={fontStyleObj}
-                                className="w-full h-[48px] flex items-center justify-between px-4 hover:bg-gray-50/80 dark:hover:bg-white/5 transition-colors border-b border-gray-50 dark:border-gray-800/30 last:border-b-0"
+                                className="w-full h-[48px] flex items-center justify-between px-4 hover:bg-gray-50/80 dark:hover:bg-white/5 transition-colors border-b border-gray-50 dark:border-border last:border-b-0"
                             >
                                 <div className="flex items-center gap-3">
                                     {/* Red dot indicator for today */}

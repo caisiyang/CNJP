@@ -26,12 +26,15 @@ export default function SettingsModal({
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-sm bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+      {/* Modal Container */}
+      {/* 添加了 'custom-scrollbar' 类名 */}
+      <div className="custom-scrollbar relative w-full max-w-sm bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 style={fontStyleObj} className="text-xl font-bold text-[var(--text-main)]">
             {settings.lang === "sc" ? "设置" : "設置"}
@@ -129,7 +132,7 @@ export default function SettingsModal({
             </div>
           </div>
 
-          {/* 4. Font Size (Continuous Slider) */}
+          {/* 4. Font Size */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <label style={fontStyleObj} className="text-xs font-bold text-[var(--text-sub)] uppercase tracking-wider">
@@ -167,6 +170,36 @@ export default function SettingsModal({
           </div>
         </div>
       </div>
+
+      {/* 核心美化 CSS */}
+      <style jsx>{`
+        /* 宽度 */
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        /* 轨道 (背景) - 设为透明或极淡 */
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        /* 滑块 (Thumb) */
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: rgba(156, 163, 175, 0.5); /* 浅灰色，半透明 */
+          border-radius: 9999px; /* 全圆角 */
+        }
+
+        /* 滑块悬停 (Hover) */
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(156, 163, 175, 0.8); /* 悬停时加深 */
+        }
+
+        /* Firefox 适配 (Firefox 使用不同的属性) */
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+        }
+      `}</style>
     </div>
   );
 }

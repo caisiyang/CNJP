@@ -40,7 +40,7 @@ export default function RootLayout({
       lang="zh-CN"
       suppressHydrationWarning
     >
-      <body className="antialiased">
+      <body className="antialiased bg-background text-main">
         <Providers>
           {children}
         </Providers>

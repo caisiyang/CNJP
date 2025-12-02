@@ -54,7 +54,7 @@ export default function Header({
   const englishText = "CHINA NEWS FROM JAPAN";
 
   return (
-    <header className="sticky top-0 w-full bg-white/80 dark:bg-[#202020]/80 backdrop-blur-md z-50 shadow-md transition-all duration-300 border-b border-gray-200/50 dark:border-white/5">
+    <header className="sticky top-0 w-full bg-white/80 dark:bg-[#121212]/80 backdrop-blur-md z-50 shadow-md dark:shadow-none transition-all duration-300 border-b border-gray-200/50 dark:border-white/5">
       <div className="max-w-[600px] mx-auto px-4 pt-3 pb-0">
         {/* Top Row: Logo & Icons */}
         <div className="flex items-center justify-between mb-3">
@@ -110,7 +110,7 @@ export default function Header({
             {/* Favorites Button */}
             <button
               onClick={onOpenFav}
-              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200 relative group"
+              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200 relative group dark:text-gray-200"
               title={settings.lang === "sc" ? "收藏" : "收藏"}
               style={icon3DStyle} // 应用立体阴影
             >
@@ -123,7 +123,7 @@ export default function Header({
             {/* About Button */}
             <button
               onClick={handleAboutClick}
-              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200 relative"
+              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200 relative dark:text-gray-200"
               title={settings.lang === "sc" ? "关于本站" : "關於本站"}
               style={icon3DStyle} // 应用立体阴影
             >
@@ -139,7 +139,7 @@ export default function Header({
             {/* Settings Button */}
             <button
               onClick={onOpenSettings}
-              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200"
+              className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200 dark:text-gray-200"
               title={settings.lang === "sc" ? "设置" : "設置"}
               style={icon3DStyle} // 应用立体阴影
             >
