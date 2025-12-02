@@ -79,7 +79,7 @@ export default function NewsCard({
         <>
             <div
                 onClick={() => setIsModalOpen(true)}
-                className="w-full bg-white dark:bg-card p-4 rounded-xl shadow-md dark:shadow-none hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer border border-transparent dark:border-white/5 group relative overflow-hidden"
+                className="w-full bg-white dark:bg-card p-4 rounded-xl shadow-md dark:shadow-none md:hover:shadow-xl md:hover:-translate-y-1 active:scale-[0.98] md:active:scale-100 transition-all duration-300 cursor-pointer border border-transparent dark:border-white/5 group relative overflow-hidden"
             >
                 {/* Top Row: Category | Source • Time ... Fav */}
                 <div className="flex items-center justify-between mb-2">
@@ -140,7 +140,8 @@ export default function NewsCard({
                     style={{
                         textShadow: '0 1px 2px rgba(0,0,0,0.08)'
                     }}
-                    className="text-[16px] font-bold leading-[1.5] text-[var(--text-main)] line-clamp-2 group-hover:text-[var(--primary)] transition-colors"
+                    // Fix: Changed group-hover to md:group-hover to prevent sticky hover on mobile
+                    className="text-[16px] font-bold leading-[1.5] text-[var(--text-main)] line-clamp-2 md:group-hover:text-[var(--primary)] transition-colors"
                 >
                     {displayTitle}
                 </h3>
