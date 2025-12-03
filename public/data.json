@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025年12月03日 20时03分",
+  "last_updated": "2025年12月03日 20时13分",
   "news": [
     {
       "title": "日本文化的粉丝正在中国引起关注，但不是以一种好的方式 - CNN.co.jp",
@@ -54,8 +54,8 @@
       "origin": "日テレNEWS NNN"
     },
     {
-      "title": "中国利用首相的批评声称《旧金山条约》“非法且无效” - 《朝日新闻》",
-      "title_tc": "中國利用首相的批評聲稱《舊金山條約》“非法且無效” - 《朝日新聞》",
+      "title": "中国利用首相批评称《旧金山条约》“非法且无效” - 《朝日新闻》",
+      "title_tc": "中國利用首相批評稱《舊金山條約》“非法且無效” - 《朝日新聞》",
       "title_ja": "中国、サンフランシスコ条約は「不法かつ無効」 首相批判に乗じ主張 - 朝日新聞",
       "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE53S0lISjlkeGt6TEtlQWFFNlU1X2VJcF9jMXcwZmxUSDZoRnplZmRjbWZua1FOWkVTTmVZQU9Tclp4NFdOUGRUdkRCU1QyV2tueS1lN2NRbW5iNWEwd2daQURfX2FZRWc?oc=5",
       "image": "",
@@ -275,6 +275,19 @@
       "origin": "Yahoo!ニュース"
     },
     {
+      "title": "中国政府呼吁人们不要前往日本“可能对东海经济产生重大影响”；中惠联会长表达担忧 - nagoyatv.com",
+      "title_tc": "中國政府呼籲人們不要前往日本“可能對東海經濟產生重大影響”；中惠聯會長表達擔憂 - nagoyatv.com",
+      "title_ja": "中国政府の訪日自粛呼びかけ「東海経済に大きな影響を及ぼす可能性」 中経連会長が懸念示す - nagoyatv.com",
+      "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBJdXJVUjNyb2Q0N1VBdmI4UGMzdkY4cnFRczFNbTlSWUdDa0M1a0Zib1QxM2gzbkZGQ210MzI0RGVBajJsMDdkS0FLQS1ZTUxJMHfSAWRBVV95cUxPbFQ2aExYb3liZHBsbm1jQl9pY3FDZk5XRjNpTHBuTmZhV0hLbVJRM2xTY1FNYXdMcEpTN1h1eW9QNFFwSFg2U1RuaTF6OFZYcVRHMlBkTmZZeEQwYzVxSk5MUHJR?oc=5",
+      "image": "",
+      "logo": "https://www.google.com/s2/favicons?domain=www.nagoyatv.com&sz=128",
+      "summary": "",
+      "category": "军事",
+      "time_str": "12-03 17:09",
+      "timestamp": 1764749340,
+      "origin": "nagoyatv.com"
+    },
+    {
       "title": "中国政府呼吁人们不要前往日本“可能会对东海经济产生重大影响”，中惠联会长表示担忧（Me-Tele（名古屋电视台）） - 雅虎！消息",
       "title_tc": "中國政府呼籲人們不要前往日本“可能會對東海經濟產生重大影響”，中惠聯會長表示擔憂（Me-Tele（名古屋電視台）） - 雅虎！消息",
       "title_ja": "中国政府の訪日自粛呼びかけ「東海経済に大きな影響を及ぼす可能性」 中経連会長が懸念示す（メ〜テレ（名古屋テレビ）） - Yahoo!ニュース",
@@ -312,6 +325,19 @@
       "time_str": "12-03 16:50",
       "timestamp": 1764748222,
       "origin": "Yahoo!ニュース"
+    },
+    {
+      "title": "关于光刻胶的贸易管制没有变化=内阁官房长官就暂停向中国发货的报道 - 路透",
+      "title_tc": "關於光刻膠的貿易管制沒有變化=內閣官房長官就暫停向中國發貨的報導 - 路透",
+      "title_ja": "フォトレジストに関する貿易管理変更ない＝対中出荷停止報道で官房長官 - Reuters",
+      "link": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBramwyamUyaHFfeS1STmV1a01nSnNLbFlRTm1JZ3NxaUpTYUplMzdfX294UllMRk8xWkMyRVk1aE5ISmZBbERQUW5mb1lBU3lVVkFRQkw4RDJpVE15RmhianpEQ1dxN0J5MmFRNy1YLVlJOW8yWnFYYWdRM0Q0QQ?oc=5",
+      "image": "",
+      "logo": "https://www.google.com/s2/favicons?domain=jp.reuters.com&sz=128",
+      "summary": "",
+      "category": "经济",
+      "time_str": "12-03 16:49",
+      "timestamp": 1764748140,
+      "origin": "Reuters"
     },
     {
       "title": "开始发行介绍日本和中国步法艺术家的新汇编“PAO-Vol.1” - OTOTOY",
@@ -1016,8 +1042,8 @@
       "origin": "日テレNEWS NNN"
     },
     {
-      "title": "偶像们对取消在华演唱会表示遗憾“日本人不得入内” 呼吁人们不要前往日本 - 雅虎！消息",
-      "title_tc": "偶像們對取消在華演唱會表示遺憾“日本人不得入內” 呼籲人們不要前往日本 - 雅虎！消息",
+      "title": "取消来华演出的偶像“沮丧……”并表示遗憾 呼吁民众不要赴日旅游当天，中国文化局表示“日本人不可以” - 雅虎！消息",
+      "title_tc": "取消來華演出的偶像“沮喪……”並表示遺憾 呼籲民眾不要赴日旅遊當天，中國文化局表示“日本人不可以” - 雅虎！消息",
       "title_ja": "中国公演中止のアイドル「悔しい…」無念の思い吐露 日本へ渡航自粛呼びかけ当日に中国文化局から「日本人は許可できない」 - Yahoo!ニュース",
       "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5MOGhLRUw3aUJKR1pYV1ZMdlNrbXhpWFRwaWRBVkhYVHByNWZQdXRkS01jNzJNZWcwQlFwMGpmcWlIYnZHRTJlU1dBck9teVByWmI3c2F4ZGJDVnJWSUJqSG9hbndvX0pQb05NdEVoTmJvbEw5aWktdUlIa2FqMmc?oc=5",
       "image": "",
@@ -1952,8 +1978,8 @@
       "origin": "日本経済新聞"
     },
     {
-      "title": "中国在机场拘留印度女子，中印领土争端再度紧张 - 日本经济新闻",
-      "title_tc": "中國在機場拘留印度女子，中印領土爭端再度緊張 - 日本經濟新聞",
+      "title": "中国在机场扣留印度女子 中印领土争端再起冲突 - 日本经济新闻",
+      "title_tc": "中國在機場扣留印度女子 中印領土爭端再起衝突 - 日本經濟新聞",
       "title_ja": "中国、空港でインド人女性拘束 領土問題で中印対立が再燃 - 日本経済新聞",
       "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9yT1c5Yjc3cWItSWhfZkRDbllqd2hBT3pKZVVKdDktTVdiZHBvSzBzY2lxWDhRUFhvUnYwajd6U3dlVXl4enRtcmVzbzdlaDdzUHZfR2VRRXFxVlBWanNEZ09MRjEzQ1FUT0Z2RA?oc=5",
       "image": "",
@@ -2017,8 +2043,8 @@
       "origin": "ダイヤモンド・オンライン"
     },
     {
-      "title": "170家车企揭露中国市场悲惨现实！表示“影响会很严重”的受访者中，本田的比例最高，日产与本田之间存在较大差距。 “三菱很快就逃脱了，但是……” - 钻石在线",
-      "title_tc": "170家車企揭露中國市場悲慘現實！表示“影響會很嚴重”的受訪者中，本田的比例最高，日產與本田之間存在較大差距。 “三菱很快就逃脫了，但是……” - 鑽石在線",
+      "title": "170家车企揭露中国市场悲惨现实！本田收到最多的回应称“影响将是严重的”，日产和本田之间存在巨大差异。 “三菱很快就逃脱了，但是……” - 钻石在线",
+      "title_tc": "170家車企揭露中國市場悲慘現實！本田收到最多的回應稱“影響將是嚴重的”，日產和本田之間存在巨大差異。 “三菱很快就逃脫了，但是……” - 鑽石在線",
       "title_ja": "自動車メーカー170人が明かす中国市場の悲惨な実態！“影響は甚大”の回答はホンダが最多、日産、ホンダの間に大きな格差「三菱自は早抜けできたが…」 - ダイヤモンド・オンライン",
       "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE45ZXpfMlR2YXVtRWstWXM2NGdrWXNKQTVXTkRhRUhCS2Y5ZFFOakkxM0pBVnVzZEVYcV9lcUw2dkotTmRYVFBhbUR2UHfSAU9BVV95cUxOYW1KeDloQnNuQXVkRjZ5TEtOdVZhYWhCbktWd1dzUmdLWVlySHdsSVdmZFA3T1ZSMlV2NXVYTUhXYXJvWXRhQWZ1eGNnTEQ4?oc=5",
       "image": "",
@@ -3551,8 +3577,8 @@
       "origin": "産経ニュース"
     },
     {
-      "title": "中国外长要求英法在台湾问题上支持，向日本施压（时事社） - 雅虎！消息",
-      "title_tc": "中國外長要求英法在台灣問題上支持，向日本施壓（時事社） - 雅虎！消息",
+      "title": "中国外长要求英法在台湾问题上支持，向日本施压（时事通讯社） - 雅虎！消息",
+      "title_tc": "中國外長要求英法在台灣問題上支持，向日本施壓（時事通訊社） - 雅虎！消息",
       "title_ja": "英仏に台湾問題で支持要求 中国外相、日本に圧力（時事通信） - Yahoo!ニュース",
       "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBQWGhVSGg2S2R1MmVMRVNTbDE5eHRJamdvdE5iU2Nwd2pCeVVsNHhwc3ZaUUg2TFRIUk5KaUN3NkNLQXQ3LWd0OTRGUmFma1VGak9hNUZfai1ydEl4UmhDblhaYVNQUzFjX2RNa0o5Rm1LSUdlZHl6bDdraUphcmc?oc=5",
       "image": "",
@@ -4565,8 +4591,8 @@
       "origin": "Yahoo!ニュース"
     },
     {
-      "title": "《中国风险浮现》日本企业正在摆脱对中国的依赖自2012年高峰以来已有1000多家企业撤离中国，不仅是制造业，连与通货紧缩作斗争的零售业都在关店（财经邮报WEB-雅虎新闻）",
-      "title_tc": "《中國風險浮現》日本企業正在擺脫對中國的依賴自2012年高峰以來已有1000多家企業撤離中國，不僅是製造業，連與通貨緊縮作鬥爭的零售業都在關店（財經郵報WEB-雅虎新聞）",
+      "title": "《中国风险浮现》自2012年高峰以来已有超过1000家企业撤离中国，不仅是制造业，连与通货紧缩作斗争的零售业都在关店（财经网-雅虎新闻）",
+      "title_tc": "《中國風險浮現》自2012年高峰以來已有超過1000家企業撤離中國，不僅是製造業，連與通貨緊縮作鬥爭的零售業都在關店（財經網-雅虎新聞）",
       "title_ja": "チャイナリスク顕在化》進む日本企業の「脱・中国依存」 2012年のピーク時から1000社以上が中国から撤退、製造業だけでなくデフレで苦戦する小売り業も店舗閉鎖（マネーポストWEB - Yahoo!ニュース",
       "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1tSjJIcmFqa0Y5X3hiMjBZNFRGN1BLdkNvdUI1VUhPSGwxalJCeW11ZWYtZkU5MTEtMHhHQWoyWURUQ0lILTJkOXpzLWJqd2hPMUg5N1hyRFpaelVhd1FhTmJqbmhVOWZQMkNLTnd5dlJMVU1weG05U0hzbkVGbmc?oc=5",
       "image": "",
