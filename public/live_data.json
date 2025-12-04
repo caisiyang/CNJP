@@ -1,9 +1,9 @@
 {
-  "lastUpdated": "2025-12-04T01:47:31.460333",
+  "lastUpdated": "2025-12-04T12:49:34.557888",
   "streams": [
     {
       "id": "shibuya",
-      "displayName": "涩谷街头直播",
+      "displayName": "涩谷交差点24小时直播",
       "channelName": "ANN News",
       "isLive": true,
       "videoId": "tujkoXI8rWM",
@@ -11,22 +11,13 @@
       "matchScore": 4
     },
     {
-      "id": "tokyo_bay",
-      "displayName": "东京湾24小时直播",
-      "channelName": "東京風景",
-      "isLive": true,
-      "videoId": "_k-5U7IeK8g",
-      "title": "LIVE from Tokyo — 24/7 City Views | Chat, Relax, and Win a Postcard from Japan 🇯🇵 (w 🎄Winter Music)",
-      "matchScore": 4
-    },
-    {
       "id": "asakusa",
       "displayName": "浅草寺24小时直播",
       "channelName": "浅草中屋チャンネル",
-      "isLive": true,
-      "videoId": "LHPKP8PP6QY",
-      "title": "【LIVE CAMERA】浅草ライブカメラ「浅草寺 宝蔵門」（浅草中屋  屋上より）",
-      "matchScore": 5
+      "isLive": false,
+      "videoId": null,
+      "title": null,
+      "matchScore": 0
     },
     {
       "id": "shinjuku",
@@ -45,6 +36,24 @@
       "videoId": "sm3xXTfDtGE",
       "title": "富士山ライブカメラ(忍野八海から)[4K] - [4K]Mount Fuji webcams (Oshino Hakkai) from Japan. 【LiveFujigokoTV】",
       "matchScore": 2
+    },
+    {
+      "id": "osaka_night",
+      "displayName": "大阪全景24小时直播",
+      "channelName": "starstyle",
+      "isLive": true,
+      "videoId": "GCxs-DhQs08",
+      "title": "ライブ配信・夜景がきれい！あべのハルカス・大阪の夜景/JAPAN NIGHT VEW /Live streaming and beautiful night view! Osaka,Japan",
+      "matchScore": 4
+    },
+    {
+      "id": "tokyo_bay",
+      "displayName": "东京湾24小时直播",
+      "channelName": "東京風景",
+      "isLive": true,
+      "videoId": "_k-5U7IeK8g",
+      "title": "LIVE from Tokyo — 24/7 City Views | Chat, Relax, and Win a Postcard from Japan 🇯🇵 (w 🎄Winter Music)",
+      "matchScore": 4
     }
   ]
 }
