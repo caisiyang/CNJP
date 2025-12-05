@@ -250,6 +250,9 @@ def update_news():
     
     valid_count = 0
     filtered_count = 0
+    
+    # 记录本次抓取的时间戳
+    current_fetch_time = int(time.time())
 
     for i, entry in enumerate(new_entries):
         link = entry.link
@@ -296,6 +299,7 @@ def update_news():
             "category": classify_news(title_zh),
             "time_str": time_str,
             "timestamp": timestamp,
+            "fetched_at": current_fetch_time,  # 抓取时间戳，用于按抓取顺序排序
             "origin": source_title
         }
         
@@ -342,7 +346,11 @@ def update_news():
             if new_clean_key in data_map:
                 existing_item = data_map[new_clean_key]
                 if existing_item['link'] == new_item['link']:
+                    # 更新时保留原有的 fetched_at（首次抓取时间）
+                    original_fetched_at = existing_item.get('fetched_at')
                     data_map[new_clean_key].update(new_item)
+                    if original_fetched_at:
+                        data_map[new_clean_key]['fetched_at'] = original_fetched_at
                     total_updated += 1
                 else:
                     total_ignored += 1

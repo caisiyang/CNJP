@@ -12,7 +12,7 @@ import ArchiveModal from "@/components/modals/ArchiveModal";
 import ArchiveDrawer from "@/components/ArchiveDrawer";
 import BackToTop from "@/components/BackToTop";
 import LiveView from "@/components/LiveView";
-import { Search, Loader2, X, Flame } from "lucide-react";
+import { Search, Loader2, X, Flame, ArrowUpDown, Clock, Calendar } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { CATEGORY_MAP, CATEGORIES } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
@@ -44,6 +44,15 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(25);
   const [showArchiveDrawer, setShowArchiveDrawer] = useState(false);
+
+  // Sort State: 'publish' (按发布时间) or 'fetch' (按抓取时间)
+  const [sortMode, setSortMode] = useState<'publish' | 'fetch'>('publish');
+
+  // New Content Notification State
+  const [newContentCount, setNewContentCount] = useState(0);
+  const [pendingNewsData, setPendingNewsData] = useState<NewsItem[] | null>(null);
+  const [pendingLastUpdated, setPendingLastUpdated] = useState("");
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Smart Search Suggestions Logic ---
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -160,7 +169,6 @@ export default function Home() {
   const [pullStartX, setPullStartX] = useState(0);
   const [pullCurrentY, setPullCurrentY] = useState(0);
   const PULL_THRESHOLD = 80;
-  // const SWIPE_THRESHOLD = 50; // Removed swipe threshold
 
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -189,6 +197,10 @@ export default function Home() {
       if (data && data.news) {
         setRawNewsData(data.news);
         setLastUpdated(data.last_updated || "");
+        // 清除新内容提醒
+        setNewContentCount(0);
+        setPendingNewsData(null);
+        setPendingLastUpdated("");
       } else if (Array.isArray(data)) {
         setRawNewsData(data);
       }
@@ -214,9 +226,76 @@ export default function Home() {
     }
   };
 
+  // 后台轮询检查新内容
+  const checkForNewContent = useCallback(async () => {
+    try {
+      const dataUrl = R2_PUBLIC_URL
+        ? `${R2_PUBLIC_URL}/data.json?t=${Date.now()}`
+        : `/data.json?t=${Date.now()}`;
+      const r = await fetch(dataUrl);
+      const data = await r.json();
+
+      if (data && data.news && data.last_updated !== lastUpdated) {
+        // 有新内容
+        const currentLinks = new Set(rawNewsData.map(item => item.link));
+        const newItems = data.news.filter((item: NewsItem) => !currentLinks.has(item.link));
+
+        if (newItems.length > 0) {
+          setNewContentCount(newItems.length);
+          setPendingNewsData(data.news);
+          setPendingLastUpdated(data.last_updated || "");
+        }
+      }
+    } catch (e) {
+      console.error("Check for new content failed", e);
+    }
+  }, [lastUpdated, rawNewsData]);
+
+  // 设置轮询
   useEffect(() => {
     fetchData();
+
+    // 每5分钟检查一次新内容
+    pollingIntervalRef.current = setInterval(() => {
+      checkForNewContent();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
   }, []);
+
+  // 当 lastUpdated 或 rawNewsData 变化时更新 checkForNewContent 的依赖
+  useEffect(() => {
+    // 清除旧的轮询
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+    }
+    // 设置新的轮询
+    pollingIntervalRef.current = setInterval(() => {
+      checkForNewContent();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, [checkForNewContent]);
+
+  // 加载新内容
+  const loadNewContent = () => {
+    if (pendingNewsData) {
+      setRawNewsData(pendingNewsData);
+      setLastUpdated(pendingLastUpdated);
+      setNewContentCount(0);
+      setPendingNewsData(null);
+      setPendingLastUpdated("");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     const newData: Record<string, NewsItem[]> = {};
@@ -284,8 +363,6 @@ export default function Home() {
   };
 
   const handleTouchEnd = async (e: React.TouchEvent) => {
-    // Removed Swipe Logic
-
     // Pull to Refresh Logic
     if (pullCurrentY > PULL_THRESHOLD) {
       setIsRefreshing(true);
@@ -321,6 +398,11 @@ export default function Home() {
     setVisibleCount(25);
   };
 
+  // 切换排序模式
+  const toggleSortMode = () => {
+    setSortMode(prev => prev === 'publish' ? 'fetch' : 'publish');
+  };
+
   const filteredItems = useMemo(() => {
     let filtered = rawNewsData;
     if (currentFilter !== "all") {
@@ -338,8 +420,22 @@ export default function Home() {
         return title.includes(q) || origin.includes(q);
       });
     }
-    return filtered;
-  }, [rawNewsData, currentFilter, searchQuery]);
+
+    // 根据排序模式排序
+    const sorted = [...filtered].sort((a, b) => {
+      if (sortMode === 'fetch') {
+        // 按抓取时间排序（新抓取的在前）
+        const fetchA = (a as any).fetched_at || a.timestamp || 0;
+        const fetchB = (b as any).fetched_at || b.timestamp || 0;
+        return fetchB - fetchA;
+      } else {
+        // 按发布时间排序（默认）
+        return (b.timestamp || 0) - (a.timestamp || 0);
+      }
+    });
+
+    return sorted;
+  }, [rawNewsData, currentFilter, searchQuery, sortMode]);
 
   const displayItems = filteredItems.slice(0, visibleCount);
 
@@ -461,10 +557,29 @@ export default function Home() {
 
               {/* Search & Archive Bar - 固定高度和间距 */}
               <div className="px-4 pb-3 relative z-45">
-                <div className="flex justify-between items-center gap-3 h-12">
+                {/* 新内容提醒 */}
+                <AnimatePresence>
+                  {newContentCount > 0 && (
+                    <motion.button
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      onClick={loadNewContent}
+                      className="w-full mb-3 py-2.5 px-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-sm font-medium rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                    >
+                      <ArrowUpDown className="w-4 h-4" />
+                      {settings.lang === "sc"
+                        ? `有 ${newContentCount} 条新内容`
+                        : `有 ${newContentCount} 條新內容`}
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+
+                <div className="flex justify-between items-center gap-2 h-12">
+                  {/* 搜索框 - 缩短宽度 */}
                   <div
                     ref={searchContainerRef}
-                    className="flex-1 relative h-full min-w-0"
+                    className="flex-[2] relative h-full min-w-0"
                   >
                     <div className="flex items-center gap-2 h-full bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-white/10 rounded-xl px-4 shadow-md dark:shadow-none transition-all focus-within:ring-2 focus-within:ring-[var(--primary)] focus-within:border-transparent">
                       <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
@@ -560,12 +675,34 @@ export default function Home() {
                     )}
                   </div>
 
+                  {/* 存档按钮 */}
                   <button
                     type="button"
                     onClick={() => setShowArchiveDrawer(!showArchiveDrawer)}
-                    className="h-full px-5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1e1e1e] text-sm font-medium text-[var(--text-main)] hover:border-[var(--primary)] hover:text-[var(--primary)] shadow-md dark:shadow-none transition-all whitespace-nowrap flex items-center gap-2 flex-shrink-0"
+                    className="h-full px-4 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#1e1e1e] text-sm font-medium text-[var(--text-main)] hover:border-[var(--primary)] hover:text-[var(--primary)] shadow-md dark:shadow-none transition-all whitespace-nowrap flex items-center gap-1.5 flex-shrink-0"
                   >
-                    {settings.lang === "sc" ? "历史归档" : "歷史歸檔"}
+                    <Calendar className="w-4 h-4" />
+                    {settings.lang === "sc" ? "存档" : "存檔"}
+                  </button>
+
+                  {/* 排序按钮 */}
+                  <button
+                    type="button"
+                    onClick={toggleSortMode}
+                    className={`h-full px-4 rounded-xl border text-sm font-medium shadow-md dark:shadow-none transition-all whitespace-nowrap flex items-center gap-1.5 flex-shrink-0 ${sortMode === 'fetch'
+                        ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--primary)]'
+                        : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#1e1e1e] text-[var(--text-main)] hover:border-[var(--primary)] hover:text-[var(--primary)]'
+                      }`}
+                    title={sortMode === 'publish'
+                      ? (settings.lang === "sc" ? "当前按发布时间排序，点击切换" : "當前按發布時間排序，點擊切換")
+                      : (settings.lang === "sc" ? "当前按抓取时间排序，点击切换" : "當前按抓取時間排序，點擊切換")
+                    }
+                  >
+                    <Clock className="w-4 h-4" />
+                    {sortMode === 'publish'
+                      ? (settings.lang === "sc" ? "发布" : "發布")
+                      : (settings.lang === "sc" ? "抓取" : "抓取")
+                    }
                   </button>
                 </div>
 
