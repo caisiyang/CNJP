@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { X, Send } from "lucide-react";
 import { SYSTEM_BULLETINS, CATEGORY_DOT_COLORS, BULLETIN_PRESETS } from "@/lib/constants";
@@ -22,11 +22,9 @@ interface AggregatedBulletin {
     color: string;
 }
 
-// Visual Palette matching CategoryNav dots
 const COLORS = Object.values(CATEGORY_DOT_COLORS).filter(c => c !== 'bg-gray-900' && c !== 'bg-gray-400');
-const COOLDOWN_MS = 60 * 1000; // 1 minute
+const COOLDOWN_MS = 60 * 1000;
 
-// Hash function
 const getColorForContent = (content: string) => {
     let hash = 0;
     for (let i = 0; i < content.length; i++) {
@@ -44,17 +42,21 @@ export default function BulletinBoard() {
     const [sending, setSending] = useState(false);
     const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
-    // Scrolling state
-    const scrollRef = useRef<HTMLDivElement>(null);
+    // CSS Transform 动画状态
+    const [offset, setOffset] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
+    const [contentWidth, setContentWidth] = useState(0);
+    const contentRef = useRef<HTMLDivElement>(null);
     const animationRef = useRef<number | null>(null);
-    const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const lastTimeRef = useRef<number>(0);
+    const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Initial Load
+    // 触摸事件相关
+    const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+    const isDraggingRef = useRef(false);
+
     useEffect(() => {
         fetchBulletins();
-
         const lastSent = localStorage.getItem("last_bulletin_time");
         if (lastSent) {
             const diff = Date.now() - parseInt(lastSent, 10);
@@ -64,22 +66,25 @@ export default function BulletinBoard() {
         }
     }, []);
 
-    // Timer
     useEffect(() => {
         if (cooldownRemaining <= 0) return;
         const timer = setInterval(() => {
-            setCooldownRemaining((prev) => {
-                if (prev <= 1) return 0;
-                return prev - 1;
-            });
+            setCooldownRemaining((prev) => prev <= 1 ? 0 : prev - 1);
         }, 1000);
         return () => clearInterval(timer);
     }, [cooldownRemaining]);
 
-    // Auto-scroll animation using timestamp for consistent speed
+    // 测量内容宽度
     useEffect(() => {
-        const scrollContainer = scrollRef.current;
-        if (!scrollContainer) return;
+        if (contentRef.current) {
+            // 内容是双倍的，所以除以2得到单组宽度
+            setContentWidth(contentRef.current.scrollWidth / 2);
+        }
+    }, [bulletins]);
+
+    // CSS Transform 动画 - 使用 GPU 加速
+    useEffect(() => {
+        if (contentWidth === 0) return;
 
         const scrollSpeed = 30; // pixels per second
 
@@ -88,38 +93,64 @@ export default function BulletinBoard() {
             const deltaTime = timestamp - lastTimeRef.current;
             lastTimeRef.current = timestamp;
 
-            if (!isPaused && scrollContainer) {
-                const scrollAmount = (scrollSpeed * deltaTime) / 1000;
-                scrollContainer.scrollLeft += scrollAmount;
-
-                // Infinite scroll logic
-                const oneSetWidth = scrollContainer.scrollWidth / 2;
-                if (oneSetWidth > 0 && scrollContainer.scrollLeft >= oneSetWidth) {
-                    scrollContainer.scrollLeft -= oneSetWidth;
-                }
+            if (!isPaused) {
+                setOffset(prev => {
+                    const newOffset = prev + (scrollSpeed * deltaTime) / 1000;
+                    // 无缝循环：当滚动超过一组内容宽度时重置
+                    if (newOffset >= contentWidth) {
+                        return newOffset - contentWidth;
+                    }
+                    return newOffset;
+                });
             }
             animationRef.current = requestAnimationFrame(animate);
         };
 
         animationRef.current = requestAnimationFrame(animate);
-
         return () => {
             if (animationRef.current) cancelAnimationFrame(animationRef.current);
         };
-    }, [isPaused]);
+    }, [isPaused, contentWidth]);
 
-    const handleInteractionStart = () => {
+    // 鼠标事件 - PC端悬停暂停
+    const handleMouseEnter = useCallback(() => {
         setIsPaused(true);
         if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-    };
+    }, []);
 
-    const handleInteractionEnd = () => {
-        // Resume after 1 second
-        if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-        pauseTimeoutRef.current = setTimeout(() => {
-            setIsPaused(false);
-        }, 1000);
-    };
+    const handleMouseLeave = useCallback(() => {
+        pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 1000);
+    }, []);
+
+    // 触摸事件 - 只在水平滑动组件时暂停
+    const handleTouchStart = useCallback((e: React.TouchEvent) => {
+        const touch = e.touches[0];
+        touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+        isDraggingRef.current = false;
+    }, []);
+
+    const handleTouchMove = useCallback((e: React.TouchEvent) => {
+        if (!touchStartRef.current) return;
+        const touch = e.touches[0];
+        const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+        const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+
+        // 只有水平滑动距离大于垂直滑动时才认为是在操作组件
+        if (deltaX > deltaY && deltaX > 10) {
+            isDraggingRef.current = true;
+            setIsPaused(true);
+            if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+        }
+    }, []);
+
+    const handleTouchEnd = useCallback(() => {
+        if (isDraggingRef.current) {
+            // 只有真正拖动过才延迟恢复
+            pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 1000);
+        }
+        touchStartRef.current = null;
+        isDraggingRef.current = false;
+    }, []);
 
     const fetchBulletins = async () => {
         try {
@@ -202,18 +233,13 @@ export default function BulletinBoard() {
         const result: AggregatedBulletin[] = distinctContents.map(content => {
             const count = counts[content];
             const percent = total > 0 ? Math.round((count / total) * 100) : 0;
-            return {
-                content,
-                count,
-                percent,
-                color: getColorForContent(content)
-            };
+            return { content, count, percent, color: getColorForContent(content) };
         });
 
         return result.sort((a, b) => b.count - a.count);
     }, [bulletins]);
 
-    // Double the list for seamless infinite scroll
+    // 双倍内容实现无缝循环
     const displayList = [...aggregatedList, ...aggregatedList];
 
     const getPresetContent = (item: { sc: string, tc: string }) => {
@@ -222,10 +248,9 @@ export default function BulletinBoard() {
 
     return (
         <div className="w-full mb-3">
-            {/* Master Standard Container */}
             <div className="w-full max-w-[600px] h-[52px] mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex items-center px-1 mt-3 overflow-hidden">
 
-                {/* Left Label ("Hot") */}
+                {/* Left Label */}
                 <div className="flex items-center gap-1.5 pl-1 pr-3 border-r border-gray-100 dark:border-white/5 shrink-0 h-4">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                     <span className="text-[13px] font-medium text-gray-600 dark:text-gray-300 leading-none">
@@ -233,16 +258,22 @@ export default function BulletinBoard() {
                     </span>
                 </div>
 
-                {/* Scrollable Marquee Area - NO MASK */}
+                {/* Scrollable Marquee Area - CSS Transform */}
                 <div
-                    ref={scrollRef}
-                    className="flex-1 overflow-x-auto relative h-full flex items-center no-scrollbar"
-                    onMouseEnter={handleInteractionStart}
-                    onMouseLeave={handleInteractionEnd}
-                    onTouchStart={handleInteractionStart}
-                    onTouchEnd={handleInteractionEnd}
+                    className="flex-1 overflow-hidden relative h-full flex items-center"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
                 >
-                    <div className="inline-flex items-center w-max px-2">
+                    <div
+                        ref={contentRef}
+                        className="inline-flex items-center will-change-transform"
+                        style={{
+                            transform: `translate3d(-${offset}px, 0, 0)`,
+                        }}
+                    >
                         {displayList.map((item, i) => (
                             <div
                                 key={`${item.content}-${i}`}
@@ -329,16 +360,6 @@ export default function BulletinBoard() {
                 </div>,
                 document.body
             )}
-
-            <style jsx global>{`
-                .no-scrollbar::-webkit-scrollbar {
-                    display: none;
-                }
-                .no-scrollbar {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
-                }
-            `}</style>
         </div>
     );
 }

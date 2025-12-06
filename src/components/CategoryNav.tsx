@@ -2,7 +2,7 @@
 
 import { useTheme } from "./ThemeContext";
 import { CATEGORIES, CATEGORY_DOT_COLORS } from "@/lib/constants";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Pause, Play } from "lucide-react";
 
 interface CategoryNavProps {
@@ -12,34 +12,52 @@ interface CategoryNavProps {
 
 export default function CategoryNav({ currentFilter, onFilterChange }: CategoryNavProps) {
   const { settings } = useTheme();
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [isStopped, setIsStopped] = useState(true);
   const animationRef = useRef<number | null>(null);
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTimeRef = useRef<number>(0);
+
+  // CSS Transform 动画状态
+  const [offset, setOffset] = useState(0);
+  const [contentWidth, setContentWidth] = useState(0);
+
+  // 触摸事件相关
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const isDraggingRef = useRef(false);
 
   // Triple the items for infinite scroll illusion
   const marqueeItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
 
+  // 测量内容宽度
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+    if (contentRef.current) {
+      // 内容是三倍的，所以除以3得到单组宽度
+      setContentWidth(contentRef.current.scrollWidth / 3);
+    }
+  }, []);
 
-    const scrollSpeed = 0.5; // Pixels per frame
+  // CSS Transform 动画 - 使用 GPU 加速
+  useEffect(() => {
+    if (contentWidth === 0 || isStopped) return;
 
-    const animate = () => {
-      if (!isPaused && !isStopped && scrollContainer) {
-        scrollContainer.scrollLeft += scrollSpeed;
+    const scrollSpeed = 30; // pixels per second
 
-        // Infinite scroll logic:
-        // If we've scrolled past the first set (approx 1/3 width), jump back to 0
-        // We need to calculate the width of one set.
-        // Since we have 3 identical sets, scrollWidth / 3 is the width of one set.
-        const oneSetWidth = scrollContainer.scrollWidth / 3;
+    const animate = (timestamp: number) => {
+      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+      const deltaTime = timestamp - lastTimeRef.current;
+      lastTimeRef.current = timestamp;
 
-        if (scrollContainer.scrollLeft >= oneSetWidth) {
-          scrollContainer.scrollLeft -= oneSetWidth;
-        }
+      if (!isPaused && !isStopped) {
+        setOffset(prev => {
+          const newOffset = prev + (scrollSpeed * deltaTime) / 1000;
+          // 无缝循环：当滚动超过一组内容宽度时重置
+          if (newOffset >= contentWidth) {
+            return newOffset - contentWidth;
+          }
+          return newOffset;
+        });
       }
       animationRef.current = requestAnimationFrame(animate);
     };
@@ -49,68 +67,94 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [isPaused, isStopped]);
+  }, [isPaused, isStopped, contentWidth]);
 
-  const handleInteractionStart = () => {
+  // 鼠标事件 - PC端悬停暂停
+  const handleMouseEnter = useCallback(() => {
     if (isStopped) return;
     setIsPaused(true);
     if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-  };
+  }, [isStopped]);
 
-  const handleInteractionEnd = () => {
+  const handleMouseLeave = useCallback(() => {
     if (isStopped) return;
-    // Resume after 2 seconds
-    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-    pauseTimeoutRef.current = setTimeout(() => {
-      setIsPaused(false);
-    }, 2000);
-  };
+    pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 2000);
+  }, [isStopped]);
+
+  // 触摸事件 - 只在水平滑动组件时暂停
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (isStopped) return;
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+    isDraggingRef.current = false;
+  }, [isStopped]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (isStopped || !touchStartRef.current) return;
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+
+    // 只有水平滑动距离大于垂直滑动时才认为是在操作组件
+    if (deltaX > deltaY && deltaX > 10) {
+      isDraggingRef.current = true;
+      setIsPaused(true);
+      if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
+    }
+  }, [isStopped]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (isStopped) return;
+    if (isDraggingRef.current) {
+      pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 2000);
+    }
+    touchStartRef.current = null;
+    isDraggingRef.current = false;
+  }, [isStopped]);
 
   const handleToggleStop = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isStopped) {
-      // Resume
       setIsStopped(false);
       setIsPaused(false);
+      lastTimeRef.current = 0; // Reset animation timing
     } else {
-      // Stop and reset
       setIsStopped(true);
       setIsPaused(true);
-      if (scrollRef.current) {
-        scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-      }
+      setOffset(0); // Reset position
     }
   };
 
   const handleCategoryClick = (key: string) => {
     onFilterChange(key);
-    // Pause for 2 seconds then resume
     if (!isStopped) {
       setIsPaused(true);
       if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-      pauseTimeoutRef.current = setTimeout(() => {
-        setIsPaused(false);
-      }, 2000);
+      pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 2000);
     }
   };
 
   return (
-    <div className="w-full sticky top-[200px] z-50 px-4 pb-1"
-      onMouseEnter={handleInteractionStart}
-      onMouseLeave={handleInteractionEnd}
-      onTouchStart={handleInteractionStart}
-      onTouchEnd={handleInteractionEnd}
+    <div
+      className="w-full sticky top-[200px] z-50 px-4 pb-1"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <nav
         className="w-full max-w-[600px] h-[52px] mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex items-center px-1 mt-3 overflow-hidden"
       >
-        {/* Container */}
-        <div
-          ref={scrollRef}
-          className="relative flex-1 overflow-x-auto no-scrollbar"
-          style={{ scrollBehavior: isStopped ? 'smooth' : 'auto' }}
-        >
-          <div className="flex items-center h-full gap-2.5 w-max px-2 py-2">
+        {/* Container - CSS Transform */}
+        <div className="relative flex-1 overflow-hidden">
+          <div
+            ref={contentRef}
+            className="flex items-center h-full gap-2.5 w-max px-2 py-2 will-change-transform"
+            style={{
+              transform: isStopped ? 'translate3d(0, 0, 0)' : `translate3d(-${offset}px, 0, 0)`,
+            }}
+          >
             {marqueeItems.map((cat, index) => {
               const uniqueKey = `${cat.key}-${index}`;
               const isActive = currentFilter === cat.key;
@@ -162,16 +206,6 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
           {isStopped ? <Play className="w-3 h-3 fill-current" /> : <Pause className="w-3 h-3 fill-current" />}
         </button>
       </nav>
-
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </div>
   );
 }
