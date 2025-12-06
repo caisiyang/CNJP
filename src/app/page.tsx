@@ -12,6 +12,7 @@ import ArchiveModal from "@/components/modals/ArchiveModal";
 import ArchiveDrawer from "@/components/ArchiveDrawer";
 import BackToTop from "@/components/BackToTop";
 import LiveView from "@/components/LiveView";
+import DisasterSection from "@/components/disaster/DisasterSection";
 import { Search, Loader2, X, Flame, ArrowUpDown, Calendar } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { CATEGORY_MAP, CATEGORIES } from "@/lib/constants";
@@ -33,8 +34,16 @@ export default function Home() {
   const [archiveIndex, setArchiveIndex] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'news' | 'live' | 'coming'>('news');
+  const [activeTab, setActiveTab] = useState<'news' | 'live' | 'disaster'>('news');
   const [isSearchingAll, setIsSearchingAll] = useState(false); // 正在加载全部数据
+
+  // Load default tab preference on mount
+  useEffect(() => {
+    const defaultTab = localStorage.getItem("default_tab") as 'news' | 'live' | 'disaster' | null;
+    if (defaultTab && ['news', 'live', 'disaster'].includes(defaultTab)) {
+      setActiveTab(defaultTab);
+    }
+  }, []);
 
   // Live View Persistence State
   const [isLiveMounted, setIsLiveMounted] = useState(false);
@@ -956,6 +965,19 @@ export default function Home() {
                   Loading...
                 </div>
               )}
+            </motion.div>
+
+          )}
+
+          {activeTab === 'disaster' && (
+            <motion.div
+              key="disaster"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.2 }}
+            >
+              <DisasterSection />
             </motion.div>
           )}
         </AnimatePresence>

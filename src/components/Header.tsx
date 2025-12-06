@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "./ThemeContext";
-import { Settings, Info, Heart, Tv, Sparkles, Newspaper, X } from "lucide-react";
+import { Settings, Info, Heart, Tv, Sparkles, Newspaper, X, CloudRain } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -13,8 +13,8 @@ interface HeaderProps {
   onOpenSettings: () => void;
   onRefresh?: () => void;
   favCount: number;
-  activeTab: 'news' | 'live' | 'coming';
-  onTabChange: (tab: 'news' | 'live' | 'coming') => void;
+  activeTab: 'news' | 'live' | 'disaster';
+  onTabChange: (tab: 'news' | 'live' | 'disaster') => void;
   disableSticky?: boolean;
 }
 
@@ -179,13 +179,13 @@ export default function Header({
 
             <button
               onClick={() => onTabChange('news')}
-              className={`relative flex-1 h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-200 rounded-xl backdrop-blur-sm
+              className={`relative h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-300 ease-in-out rounded-xl backdrop-blur-sm overflow-hidden
                 ${activeTab === 'news'
-                  ? 'bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
-                  : 'bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
+                  ? 'flex-[1.4] bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
+                  : 'flex-1 bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
                 }`}
             >
-              <span className={`flex items-center gap-2 ${activeTab === 'news' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
+              <span className={`flex items-center gap-2 whitespace-nowrap ${activeTab === 'news' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
                 <Newspaper className={`w-4 h-4 ${activeTab === 'news' ? 'text-[var(--primary)]' : 'text-gray-400'}`} />
                 {settings.lang === "sc" ? "日媒中国报道" : "日媒中國報道"}
               </span>
@@ -193,15 +193,29 @@ export default function Header({
 
             <button
               onClick={() => onTabChange('live')}
-              className={`relative flex-1 h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-200 rounded-xl backdrop-blur-sm
+              className={`relative h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-300 ease-in-out rounded-xl backdrop-blur-sm overflow-hidden
                 ${activeTab === 'live'
-                  ? 'bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
-                  : 'bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
+                  ? 'flex-[1.4] bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
+                  : 'flex-1 bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
                 }`}
             >
-              <span className={`flex items-center gap-2 ${activeTab === 'live' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
+              <span className={`flex items-center gap-2 whitespace-nowrap ${activeTab === 'live' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
                 <Tv className={`w-4 h-4 ${activeTab === 'live' ? 'text-red-500' : 'text-gray-400'}`} />
                 {settings.lang === "sc" ? "日本实时监控" : "日本實時監控"}
+              </span>
+            </button>
+
+            <button
+              onClick={() => onTabChange('disaster')}
+              className={`relative h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-300 ease-in-out rounded-xl backdrop-blur-sm overflow-hidden
+                ${activeTab === 'disaster'
+                  ? 'flex-[1.4] bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
+                  : 'flex-1 bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
+                }`}
+            >
+              <span className={`flex items-center gap-2 whitespace-nowrap ${activeTab === 'disaster' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
+                <CloudRain className={`w-4 h-4 ${activeTab === 'disaster' ? 'text-blue-500' : 'text-gray-400'}`} />
+                {settings.lang === "sc" ? "日本天气灾害" : "日本天氣災害"}
               </span>
             </button>
 
