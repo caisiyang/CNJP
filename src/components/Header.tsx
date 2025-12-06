@@ -15,6 +15,7 @@ interface HeaderProps {
   favCount: number;
   activeTab: 'news' | 'live' | 'coming';
   onTabChange: (tab: 'news' | 'live' | 'coming') => void;
+  disableSticky?: boolean;
 }
 
 export default function Header({
@@ -24,7 +25,8 @@ export default function Header({
   onRefresh,
   favCount,
   activeTab,
-  onTabChange
+  onTabChange,
+  disableSticky = false
 }: HeaderProps) {
   const { settings } = useTheme();
   const [showBadge, setShowBadge] = useState(false);
@@ -92,7 +94,7 @@ export default function Header({
         </div>
       )}
 
-      <header className="sticky top-0 w-full bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md z-50 shadow-sm dark:shadow-none transition-all duration-300 border-b border-gray-200/50 dark:border-white/5">
+      <header className={`${disableSticky ? '' : 'sticky top-0'} w-full bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md z-50 shadow-sm dark:shadow-none transition-all duration-300 border-b border-gray-200/50 dark:border-white/5`}>
         <div className="relative max-w-[600px] mx-auto px-4 pt-4 pb-3">
 
           {/* Top Row: Logo & Icons */}
@@ -173,20 +175,17 @@ export default function Header({
           <BulletinBoard />
 
           {/* Tab Bar - Master Standard Container */}
-          <div className="w-full max-w-[600px] h-[52px] mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex items-center px-1 mt-3 overflow-hidden">
+          <div className="w-full max-w-[600px] h-[52px] mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex items-center gap-2 px-1.5 mt-3 overflow-hidden">
 
             <button
               onClick={() => onTabChange('news')}
-              className="relative flex-1 h-[42px] flex items-center justify-center text-sm font-medium transition-colors duration-200 z-10"
+              className={`relative flex-1 h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-200 rounded-xl backdrop-blur-sm
+                ${activeTab === 'news'
+                  ? 'bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
+                  : 'bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
+                }`}
             >
-              {activeTab === 'news' && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-gray-100 dark:bg-white/10 rounded-xl"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              <span className={`relative z-10 flex items-center gap-2 ${activeTab === 'news' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
+              <span className={`flex items-center gap-2 ${activeTab === 'news' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
                 <Newspaper className={`w-4 h-4 ${activeTab === 'news' ? 'text-[var(--primary)]' : 'text-gray-400'}`} />
                 {settings.lang === "sc" ? "日媒中国报道" : "日媒中國報道"}
               </span>
@@ -194,16 +193,13 @@ export default function Header({
 
             <button
               onClick={() => onTabChange('live')}
-              className="relative flex-1 h-[42px] flex items-center justify-center text-sm font-medium transition-colors duration-200 z-10"
+              className={`relative flex-1 h-[42px] flex items-center justify-center text-sm font-medium transition-all duration-200 rounded-xl backdrop-blur-sm
+                ${activeTab === 'live'
+                  ? 'bg-white/90 dark:bg-white/20 shadow-md border border-gray-200 dark:border-white/10'
+                  : 'bg-white/40 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 border border-gray-100 dark:border-white/5'
+                }`}
             >
-              {activeTab === 'live' && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-gray-100 dark:bg-white/10 rounded-xl"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              <span className={`relative z-10 flex items-center gap-2 ${activeTab === 'live' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
+              <span className={`flex items-center gap-2 ${activeTab === 'live' ? 'text-[var(--text-main)] font-bold' : 'text-gray-500 dark:text-gray-400'}`}>
                 <Tv className={`w-4 h-4 ${activeTab === 'live' ? 'text-red-500' : 'text-gray-400'}`} />
                 {settings.lang === "sc" ? "日本实时监控" : "日本實時監控"}
               </span>

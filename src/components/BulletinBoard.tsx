@@ -299,14 +299,14 @@ export default function BulletinBoard() {
                     }}
                     disabled={cooldownRemaining > 0}
                     className={cn(
-                        "relative flex items-center gap-1.5 text-[13px] transition-all duration-200 whitespace-nowrap flex-shrink-0 px-3.5 py-1.5 rounded-full shadow-md font-bold ml-2",
+                        "relative flex items-center gap-1.5 text-[13px] transition-all duration-200 whitespace-nowrap flex-shrink-0 px-3.5 py-1.5 rounded-xl shadow-md font-bold ml-2",
                         cooldownRemaining > 0
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                             : "bg-red-600 hover:bg-red-700 text-white active:scale-95"
                     )}
                 >
-                    <Send size={10} className={cooldownRemaining > 0 ? "" : "text-white dark:text-gray-900"} />
-                    <span>{cooldownRemaining > 0 ? `${cooldownRemaining}s` : (settings.lang === 'tc' ? '發聲' : '发声')}</span>
+                    <Send size={13} className={cooldownRemaining > 0 ? "" : "text-white"} />
+                    <span className="pt-[1px]">{cooldownRemaining > 0 ? `${cooldownRemaining}s` : (settings.lang === 'tc' ? '發聲' : '发声')}</span>
                 </button>
             </div>
 
@@ -406,7 +406,7 @@ export default function BulletinBoard() {
                             </div>
 
                             <div className="mt-4 text-[10px] text-center text-gray-400">
-                                1分钟内限制发送1条 • 文明发言
+                                每分钟仅能发表1次
                             </div>
                         </div>
                     </div>

@@ -8,40 +8,46 @@ import { Pause, Play } from "lucide-react";
 interface CategoryNavProps {
   currentFilter: string;
   onFilterChange: (category: string) => void;
+  disableSticky?: boolean;
+  onShowToast?: (message: string) => void;
+  totalCount?: number;
+  getCategoryCount?: (category: string) => number;
 }
 
-export default function CategoryNav({ currentFilter, onFilterChange }: CategoryNavProps) {
+export default function CategoryNav({
+  currentFilter,
+  onFilterChange,
+  disableSticky = false,
+  onShowToast,
+  totalCount = 0,
+  getCategoryCount
+}: CategoryNavProps) {
   const { settings } = useTheme();
   const contentRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [isStopped, setIsStopped] = useState(false); // 默认开启滚动
+  const [isStopped, setIsStopped] = useState(false);
   const animationRef = useRef<number | null>(null);
   const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastTimeRef = useRef<number>(0);
 
-  // CSS Transform 动画状态
   const [offset, setOffset] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
 
-  // 触摸事件相关
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const isDraggingRef = useRef(false);
 
-  // Triple the items for infinite scroll illusion
   const marqueeItems = [...CATEGORIES, ...CATEGORIES, ...CATEGORIES];
 
-  // 测量内容宽度
   useEffect(() => {
     if (contentRef.current) {
       setContentWidth(contentRef.current.scrollWidth / 3);
     }
   }, []);
 
-  // CSS Transform 动画
   useEffect(() => {
     if (contentWidth === 0 || isStopped) return;
 
-    const scrollSpeed = 30; // pixels per second
+    const scrollSpeed = 30;
 
     const animate = (timestamp: number) => {
       if (!lastTimeRef.current) lastTimeRef.current = timestamp;
@@ -67,23 +73,19 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
     };
   }, [isPaused, isStopped, contentWidth]);
 
-  // 鼠标事件 - PC端悬停暂停1秒后恢复
   const handleMouseEnter = useCallback(() => {
     if (isStopped) return;
     setIsPaused(true);
     if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
-    // 1秒后自动恢复
     pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 1000);
   }, [isStopped]);
 
   const handleMouseLeave = useCallback(() => {
     if (isStopped) return;
-    // 离开时也确保1秒后恢复
     if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 1000);
   }, [isStopped]);
 
-  // 触摸事件 - 只在水平滑动组件时暂停，1秒后恢复
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if (isStopped) return;
     const touch = e.touches[0];
@@ -106,7 +108,6 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
 
   const handleTouchEnd = useCallback(() => {
     if (isStopped) return;
-    // 拖动后1秒恢复滚动
     if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
     pauseTimeoutRef.current = setTimeout(() => setIsPaused(false), 1000);
     touchStartRef.current = null;
@@ -118,20 +119,50 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
     if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
 
     if (isStopped) {
-      // 立即恢复滚动，不等待
       setIsStopped(false);
       setIsPaused(false);
       lastTimeRef.current = 0;
     } else {
-      // 暂停并重置位置
       setIsStopped(true);
       setIsPaused(true);
       setOffset(0);
     }
   };
 
-  const handleCategoryClick = (key: string) => {
+  const getCategoryLabel = (key: string, label: string) => {
+    if (settings.lang === "sc") return label;
+    const tcMap: Record<string, string> = {
+      "全部": "全部",
+      "时政": "時政",
+      "军事": "軍事",
+      "经济": "經濟",
+      "社会": "社會",
+      "娱乐": "娛樂",
+      "体育": "體育",
+    };
+    return tcMap[label] || label;
+  };
+
+  const handleCategoryClick = (key: string, label: string) => {
     onFilterChange(key);
+
+    // 显示 Toast
+    if (onShowToast && getCategoryCount) {
+      const categoryLabel = getCategoryLabel(key, label);
+      if (key === 'all') {
+        const msg = settings.lang === 'sc'
+          ? `至今共抓取记录到 ${totalCount} 篇中国新闻`
+          : `至今共抓取記錄到 ${totalCount} 篇中國新聞`;
+        onShowToast(msg);
+      } else {
+        const count = getCategoryCount(key);
+        const msg = settings.lang === 'sc'
+          ? `${totalCount} 篇新闻中找到 ${count} 篇${categoryLabel}新闻`
+          : `${totalCount} 篇新聞中找到 ${count} 篇${categoryLabel}新聞`;
+        onShowToast(msg);
+      }
+    }
+
     if (!isStopped) {
       setIsPaused(true);
       if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current);
@@ -141,7 +172,7 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
 
   return (
     <div
-      className="w-full sticky top-[200px] z-50 px-4 pb-1"
+      className={`w-full ${disableSticky ? '' : 'sticky top-[200px]'} z-50 px-4 pb-1`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
@@ -151,7 +182,6 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
       <nav
         className="w-full max-w-[600px] h-[52px] mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex items-center px-1 mt-3 overflow-hidden"
       >
-        {/* Container - CSS Transform */}
         <div className="relative flex-1 overflow-hidden">
           <div
             ref={contentRef}
@@ -163,43 +193,34 @@ export default function CategoryNav({ currentFilter, onFilterChange }: CategoryN
             {marqueeItems.map((cat, index) => {
               const uniqueKey = `${cat.key}-${index}`;
               const isActive = currentFilter === cat.key;
+              const isAllButton = cat.key === 'all';
               const dotColor = CATEGORY_DOT_COLORS[cat.key] || "bg-gray-400";
 
               return (
                 <button
                   key={uniqueKey}
-                  onClick={() => handleCategoryClick(cat.key)}
+                  onClick={() => handleCategoryClick(cat.key, cat.label)}
                   className={`
-                    relative flex items-center gap-1.5 text-[13px] font-medium transition-all duration-200 
-                    whitespace-nowrap flex-shrink-0 px-3.5 py-1.5 rounded-full
+                    relative flex items-center gap-1.5 text-[13px] transition-all duration-200 
+                    whitespace-nowrap flex-shrink-0 px-3.5 py-1.5 rounded-xl backdrop-blur-sm
                     ${isActive
-                      ? "bg-gray-800 dark:bg-white text-white dark:text-gray-900 shadow-md font-bold"
-                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 active:scale-95"
+                      ? "bg-white/90 dark:bg-white/20 text-gray-900 dark:text-white shadow-md border border-gray-200 dark:border-white/10 font-bold"
+                      : "bg-white/60 dark:bg-transparent text-gray-700 dark:text-gray-200 hover:bg-white/80 dark:hover:bg-white/15 border border-gray-100 dark:border-transparent dark:hover:border-white/5 font-medium"
                     }
                   `}
                 >
-                  {cat.key !== 'all' && (
-                    <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
+                  {isAllButton ? (
+                    <span className="w-2.5 h-2.5 rounded-full rainbow-dot shrink-0" />
+                  ) : (
+                    <span className={`w-1.5 h-1.5 rounded-full ${dotColor} shrink-0`} />
                   )}
-                  <span>
-                    {settings.lang === "sc"
-                      ? cat.label
-                      : (cat.label === "时政" ? "時政"
-                        : cat.label === "军事" ? "軍事"
-                          : cat.label === "经济" ? "經濟"
-                            : cat.label === "社会" ? "社會"
-                              : cat.label === "娱乐" ? "娛樂"
-                                : cat.label === "体育" ? "體育"
-                                  : cat.label)
-                    }
-                  </span>
+                  <span className={isAllButton ? "font-bold" : ""}>{getCategoryLabel(cat.key, cat.label)}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Stop/Play Button */}
         <button
           onClick={handleToggleStop}
           className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full 

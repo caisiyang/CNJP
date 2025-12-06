@@ -61,6 +61,37 @@ export default function Home() {
   // --- Smart Search Suggestions Logic ---
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
+
+  // 滚动到搜索栏位置
+  const scrollToSearchBar = () => {
+    if (searchBarRef.current) {
+      const rect = searchBarRef.current.getBoundingClientRect();
+      const scrollTop = window.pageYOffset + rect.top - 8;
+      window.scrollTo({ top: scrollTop, behavior: "smooth" });
+    }
+  };
+
+  // Category Toast State
+  const [categoryToast, setCategoryToast] = useState<string | null>(null);
+  const categoryToastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleShowCategoryToast = useCallback((message: string) => {
+    setCategoryToast(message);
+    if (categoryToastTimeoutRef.current) {
+      clearTimeout(categoryToastTimeoutRef.current);
+    }
+    categoryToastTimeoutRef.current = setTimeout(() => {
+      setCategoryToast(null);
+    }, 1500);
+  }, []);
+
+  const getCategoryCount = useCallback((category: string) => {
+    return rawNewsData.filter(item => {
+      const cat = item.category ? (CATEGORY_MAP[item.category] || item.category) : '';
+      return cat === category;
+    }).length;
+  }, [rawNewsData]);
 
   // SECTION 1: Manual Trending Keywords
   const trendingNow = ["高市", "滨崎步", "台湾", "逮捕", "香港"];
@@ -632,12 +663,13 @@ export default function Home() {
         favCount={favorites.length}
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        disableSticky={showSuggestions || showArchiveDrawer}
       />
 
       {/* --- Backdrop for Archive Drawer OR Search Suggestions --- */}
       <div
         className={`
-          fixed inset-0 z-30 bg-black/20 backdrop-blur-[2px] transition-all duration-300
+          fixed inset-0 z-[100] bg-black/30 backdrop-blur-[3px] transition-all duration-300
           ${(showArchiveDrawer || showSuggestions)
             ? "opacity-100 visible pointer-events-auto"
             : "opacity-0 invisible pointer-events-none"
@@ -646,6 +678,7 @@ export default function Home() {
         onClick={() => {
           setShowArchiveDrawer(false);
           setShowSuggestions(false);
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }}
       />
 
@@ -660,15 +693,43 @@ export default function Home() {
               transition={{ duration: 0.2 }}
             >
               {/* CategoryNav - 吸顶 */}
-              <CategoryNav currentFilter={currentFilter} onFilterChange={handleFilterChange} />
+              <CategoryNav
+                currentFilter={currentFilter}
+                onFilterChange={handleFilterChange}
+                disableSticky={showSuggestions || showArchiveDrawer}
+                onShowToast={handleShowCategoryToast}
+                totalCount={rawNewsData.length}
+                getCategoryCount={getCategoryCount}
+              />
 
-              <div className={`relative max-w-[600px] mx-auto px-4 ${showSuggestions ? "z-[60]" : "z-30"}`}>
+              {/* Category Toast - Bottom of Screen */}
+              <AnimatePresence>
+                {categoryToast && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="fixed inset-x-0 bottom-24 z-[300] flex justify-center pointer-events-none"
+                  >
+                    <div className="px-4 py-2.5 bg-black/85 text-white text-sm rounded-full shadow-lg backdrop-blur-md whitespace-nowrap">
+                      {categoryToast}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div ref={searchBarRef} className={`relative max-w-[600px] mx-auto px-4 ${(showSuggestions || showArchiveDrawer) ? "z-[200]" : "z-30"}`}>
                 {/* Search & Tool Bar - Master Standard Container */}
                 <div className="w-full max-w-[600px] h-[52px] mx-auto bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 flex items-center px-1 mt-2">
 
                   {/* Left: Search Input */}
                   <div className="flex-1 flex items-center h-full px-3 gap-2">
-                    <Search className="w-5 h-5 text-gray-400 shrink-0" />
+                    {!searchInput ? (
+                      <Flame className="w-5 h-5 text-orange-500 shrink-0 fire-emoji" />
+                    ) : (
+                      <Search className="w-5 h-5 text-gray-400 shrink-0" />
+                    )}
                     <input
                       ref={input => {
                         // @ts-ignore
@@ -679,9 +740,10 @@ export default function Home() {
                       onChange={(e) => handleSearchInput(e.target.value)}
                       onFocus={() => {
                         setShowSuggestions(true);
-                        setShowArchiveDrawer(false); // 互斥：关闭存档抽屉
+                        setShowArchiveDrawer(false);
+                        setTimeout(scrollToSearchBar, 50);
                       }}
-                      placeholder={settings.lang === "sc" ? "搜寻全部新闻..." : "搜尋全部新聞..."}
+                      placeholder={settings.lang === "sc" ? "大家都在搜…" : "大家都在搜…"}
                       className="w-full h-full bg-transparent border-none outline-none text-[15px] placeholder:text-gray-400 text-gray-700 dark:text-gray-200"
                     />
                     {isSearchingAll && (
@@ -703,8 +765,12 @@ export default function Home() {
                     <div className="relative">
                       <button
                         onClick={() => {
-                          setShowArchiveDrawer(!showArchiveDrawer);
-                          setShowSuggestions(false); // 互斥：关闭搜索抽屉
+                          const newState = !showArchiveDrawer;
+                          setShowArchiveDrawer(newState);
+                          setShowSuggestions(false);
+                          if (newState) {
+                            setTimeout(scrollToSearchBar, 50);
+                          }
                         }}
                         className="flex items-center justify-center gap-1.5 px-3 h-[40px] rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-400 transition-colors"
                       >
@@ -713,7 +779,7 @@ export default function Home() {
                       </button>
                       <AnimatePresence>
                         {showArchiveDrawer && (
-                          <div className="absolute top-full right-0 mt-2 w-72 z-50">
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] z-[200]">
                             <ArchiveDrawer
                               archiveData={archiveData}
                               archiveIndex={archiveIndex}
@@ -735,12 +801,14 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Smart Suggestions Dropdown - Smaller Width */}
+                {/* Smart Suggestions Dropdown - Relative to Search Bar */}
                 {showSuggestions && (trendingNow.length > 0 || hotKeywords.length > 0 || hotSources.length > 0) && !searchInput && (
-                  <div className="absolute top-[65px] left-1/2 -translate-x-1/2 w-[280px] bg-white/95 dark:bg-[#1e1e1e]/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100 dark:border-white/5 p-3 animate-in slide-in-from-top-2 fade-in duration-200 z-50">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[280px] bg-white/95 dark:bg-[#1e1e1e]/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100 dark:border-white/5 p-3 animate-in slide-in-from-top-2 fade-in duration-200 z-[200]">
                     {/* 关闭按钮 */}
                     <button
-                      onClick={() => setShowSuggestions(false)}
+                      onClick={() => {
+                        setShowSuggestions(false);
+                      }}
                       className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
                     >
                       <X className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
@@ -904,7 +972,7 @@ export default function Home() {
             </motion.div>
           )}
         </div>
-      </main>
+      </main >
 
       <BackToTop />
 
