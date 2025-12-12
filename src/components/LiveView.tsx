@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { Play, Wifi, Clock, ExternalLink, ChevronDown, MonitorPlay } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// R2 公开访问 URL
-const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_URL || "";
+// R2 公开访问 URL - 使用自定义域名以便中国用户访问
+const R2_PUBLIC_URL = "https://r2.cn.saaaai.com";
 
 interface StreamData {
     id: string;

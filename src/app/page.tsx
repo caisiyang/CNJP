@@ -18,8 +18,8 @@ import { useTheme } from "@/components/ThemeContext";
 import { CATEGORY_MAP } from "@/lib/constants";
 import { motion, AnimatePresence } from "framer-motion";
 
-// R2 公开访问 URL
-const R2_PUBLIC_URL = process.env.NEXT_PUBLIC_R2_URL || "";
+// R2 公开访问 URL - 使用自定义域名以便中国用户访问
+const R2_PUBLIC_URL = "https://r2.cn.saaaai.com";
 
 export default function Home() {
   const { settings } = useTheme();
