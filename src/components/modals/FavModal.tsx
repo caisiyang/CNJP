@@ -32,13 +32,13 @@ export default function FavModal({
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div 
+      <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-md bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
-        
+      <div className="relative w-full max-w-md bg-white dark:bg-[#1e1e1e] modal-content rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
+
         <div className="flex items-center justify-between px-5 py-4 border-b border-black/5 dark:border-white/5">
           <h2 style={fontStyleObj} className="text-lg font-bold text-[var(--text-main)]">
             {settings.lang === "sc" ? "我的收藏" : "我的收藏"}
@@ -54,7 +54,7 @@ export default function FavModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
           {favorites.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-[var(--text-sub)] opacity-60">
               <Trash2 className="w-8 h-8 mb-2" />
@@ -67,12 +67,12 @@ export default function FavModal({
               <div
                 key={`${item.link}-${idx}`}
                 style={fontStyleObj}
-                className="group relative flex flex-col gap-2 p-3 rounded-xl bg-[var(--background)] border border-black/5 dark:border-white/5 hover:border-[var(--primary)] transition-colors"
+                className="group relative flex flex-col gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5 hover:border-[var(--primary)] transition-colors"
               >
                 <div className="text-sm font-bold text-[var(--text-main)] leading-snug pr-6 cursor-text">
                   {item.title}
                 </div>
-                
+
                 <div className="flex items-center justify-between text-xs text-[var(--text-sub)] mt-1">
                   <div className="flex items-center gap-2">
                     <a
@@ -103,7 +103,7 @@ export default function FavModal({
         </div>
 
         {favorites.length > 0 && (
-          <div className="p-4 border-t border-black/5 dark:border-white/5 bg-[var(--background)]">
+          <div className="p-4 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02]">
             <button
               onClick={onClearFavorites}
               style={fontStyleObj}

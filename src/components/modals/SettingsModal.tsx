@@ -33,8 +33,7 @@ export default function SettingsModal({
       />
 
       {/* Modal Container */}
-      {/* 添加了 'custom-scrollbar' 类名 */}
-      <div className="custom-scrollbar relative w-full max-w-sm bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+      <div className="custom-scrollbar relative w-full max-w-sm bg-white dark:bg-[#1e1e1e] modal-content rounded-3xl shadow-2xl p-6 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 style={fontStyleObj} className="text-xl font-bold text-[var(--text-main)]">
             {settings.lang === "sc" ? "设置" : "設置"}
@@ -62,7 +61,7 @@ export default function SettingsModal({
                   style={fontStyleObj}
                   className={`flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-xl border transition-all ${settings.theme === opt.id
                     ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
-                    : "bg-[var(--background)] text-[var(--text-sub)] border-black/5 dark:border-white/5 hover:bg-black/5 dark:hover:bg-white/5"
+                    : "bg-gray-50 dark:bg-white/[0.05] text-[var(--text-sub)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10"
                     }`}
                 >
                   <opt.icon className="w-4 h-4" />
@@ -100,7 +99,7 @@ export default function SettingsModal({
                     }}
                     className={`py-2 rounded-xl border text-xs font-bold transition-all ${(typeof window !== 'undefined' && (localStorage.getItem("default_tab") || "news") === tab.id)
                       ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
-                      : "bg-[var(--background)] text-[var(--text-sub)] border-black/5 dark:border-white/5 hover:bg-black/5 dark:hover:bg-white/5"
+                      : "bg-gray-50 dark:bg-white/[0.05] text-[var(--text-sub)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10"
                       }`}
                   >
                     {tab.label}
@@ -110,55 +109,26 @@ export default function SettingsModal({
             </div>
           </div>
 
-          {/* 3. Language (Left Column) */}
-          <div className="space-y-2">
-            <label style={fontStyleObj} className="text-xs font-bold text-[var(--text-sub)] uppercase tracking-wider">
-              {settings.lang === "sc" ? "语言" : "語言"}
-            </label>
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => updateSettings({ lang: "sc" })}
-                style={{ fontFamily: "var(--font-noto-sans-sc)" }}
-                className={`py-2 rounded-lg border transition-all text-xs ${settings.lang === "sc"
-                  ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                  : "bg-[var(--background)] text-[var(--text-sub)] border-black/5 dark:border-white/5 hover:bg-black/5"
-                  }`}
-              >
-                简体中文
-              </button>
-              <button
-                onClick={() => updateSettings({ lang: "tc" })}
-                style={{ fontFamily: "var(--font-noto-serif-tc)" }}
-                className={`py-2 rounded-lg border transition-all text-xs ${settings.lang === "tc"
-                  ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                  : "bg-[var(--background)] text-[var(--text-sub)] border-black/5 dark:border-white/5 hover:bg-black/5"
-                  }`}
-              >
-                繁體中文
-              </button>
-            </div>
-          </div>
-
-          {/* 4. Font Style (Right Column) */}
-          <div className="space-y-2">
+          {/* 3. Font Style (Full Width - horizontal) */}
+          <div className="col-span-2 space-y-3">
             <label style={fontStyleObj} className="text-xs font-bold text-[var(--text-sub)] uppercase tracking-wider">
               {settings.lang === "sc" ? "字体" : "字體"}
             </label>
-            <div className="flex flex-col gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => updateSettings({ fontStyle: "serif" })}
-                className={`py-2 rounded-lg border transition-all text-xs ${settings.fontStyle === "serif"
-                  ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                  : "bg-[var(--background)] text-[var(--text-sub)] border-black/5 dark:border-white/5 hover:bg-black/5"
+                className={`py-2 rounded-xl border transition-all text-xs font-bold ${settings.fontStyle === "serif"
+                  ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
+                  : "bg-gray-50 dark:bg-white/[0.05] text-[var(--text-sub)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10"
                   }`}
               >
                 <span className="font-serif">宋体</span>
               </button>
               <button
                 onClick={() => updateSettings({ fontStyle: "sans" })}
-                className={`py-2 rounded-lg border transition-all text-xs ${settings.fontStyle === "sans"
-                  ? "bg-[var(--primary)] text-white border-[var(--primary)]"
-                  : "bg-[var(--background)] text-[var(--text-sub)] border-black/5 dark:border-white/5 hover:bg-black/5"
+                className={`py-2 rounded-xl border transition-all text-xs font-bold ${settings.fontStyle === "sans"
+                  ? "bg-[var(--primary)] text-white border-[var(--primary)] shadow-md"
+                  : "bg-gray-50 dark:bg-white/[0.05] text-[var(--text-sub)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10"
                   }`}
               >
                 <span className="font-sans">黑体</span>
@@ -172,7 +142,7 @@ export default function SettingsModal({
               <label style={fontStyleObj} className="text-xs font-bold text-[var(--text-sub)] uppercase tracking-wider">
                 {settings.lang === "sc" ? "字号大小" : "字號大小"}
               </label>
-              <span className="text-[10px] font-bold text-[var(--text-main)] bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+              <span className="text-[10px] font-bold text-[var(--text-main)] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded">
                 {settings.fontSize}px
               </span>
             </div>
@@ -180,19 +150,19 @@ export default function SettingsModal({
               <span className="text-xs text-[var(--text-sub)]">A</span>
               <input
                 type="range"
-                min="12"
-                max="24"
+                min="11"
+                max="19"
                 step="1"
                 value={settings.fontSize}
                 onChange={(e) => updateSettings({ fontSize: parseInt(e.target.value) })}
-                className="flex-1 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[var(--primary)]"
+                className="flex-1 h-1.5 bg-gray-200 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--primary)]"
               />
               <span className="text-lg text-[var(--text-main)]">A</span>
             </div>
           </div>
 
           {/* Disclaimer */}
-          <div className="col-span-2 pt-4 border-t border-gray-100 dark:border-gray-800">
+          <div className="col-span-2 pt-4 border-t border-gray-100 dark:border-white/10">
             <p
               style={fontStyleObj}
               className="text-[10px] text-center text-gray-400 leading-relaxed"
@@ -204,36 +174,6 @@ export default function SettingsModal({
           </div>
         </div>
       </div>
-
-      {/* 核心美化 CSS */}
-      <style jsx>{`
-        /* 宽度 */
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-
-        /* 轨道 (背景) - 设为透明或极淡 */
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        /* 滑块 (Thumb) */
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background-color: rgba(156, 163, 175, 0.5); /* 浅灰色，半透明 */
-          border-radius: 9999px; /* 全圆角 */
-        }
-
-        /* 滑块悬停 (Hover) */
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background-color: rgba(156, 163, 175, 0.8); /* 悬停时加深 */
-        }
-
-        /* Firefox 适配 (Firefox 使用不同的属性) */
-        .custom-scrollbar {
-          scrollbar-width: thin;
-          scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-        }
-      `}</style>
     </div>
   );
 }

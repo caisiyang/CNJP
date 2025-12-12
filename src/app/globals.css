@@ -37,6 +37,48 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Hidden Scrollbar - maintains scrolling but hides the bar */
+.custom-scrollbar {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+/* Dark Mode Hidden Scrollbar - for all scrollable areas */
+.dark ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Dark Mode Modal Styling - Gradient Background */
+.dark .modal-content {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%,
+      rgba(99, 102, 241, 0.08) 0%,
+      transparent 50%),
+    linear-gradient(180deg, #1a1f2e 0%, #0f1218 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
 /* Font Definitions based on ThemeContext attributes */
 body[data-font-style="serif"][data-lang="sc"] {
   font-family: 'Noto Serif SC', 'Noto Serif TC', Georgia, 'Times New Roman', STSong, 'Songti SC', serif;
@@ -107,11 +149,42 @@ body[data-font-style="sans"][data-lang="tc"] {
 
 /* ============================================= */
 /* Dark Mode Gradient Background                 */
+/* Spotlight effect centered on the title        */
 /* ============================================= */
-.dark body,
+.dark body {
+  background: #050608 !important;
+}
+
+.dark .min-h-screen::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* Primary spotlight - extended much further down */
+    radial-gradient(ellipse 150% 150% at 30% 0%,
+      rgba(99, 102, 241, 0.2) 0%,
+      rgba(99, 102, 241, 0.12) 25%,
+      rgba(99, 102, 241, 0.05) 45%,
+      transparent 70%),
+    /* Secondary warm glow - also extended */
+    radial-gradient(ellipse 100% 100% at 50% 0%,
+      rgba(168, 85, 247, 0.15) 0%,
+      rgba(168, 85, 247, 0.08) 30%,
+      transparent 60%),
+    /* Subtle ambient light */
+    radial-gradient(circle at 50% 0%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 60%);
+}
+
 .dark .min-h-screen {
-  background: radial-gradient(circle at top, #1e2538, #0b0d12) !important;
-  background-attachment: fixed;
+  position: relative;
+  min-height: 100vh;
 }
 
 /* ============================================= */
@@ -128,12 +201,10 @@ body[data-font-style="sans"][data-lang="tc"] {
 }
 
 .dark .search-bar-container {
-  background:
-    linear-gradient(#0b0d12, #0b0d12) padding-box,
-    linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899) border-box !important;
-  border: 1px solid transparent !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 1rem !important;
+  box-shadow: none;
 }
 
 /* Tab Container - Light mode: white card, Dark mode: transparent */
@@ -212,7 +283,7 @@ body[data-font-style="sans"][data-lang="tc"] {
     linear-gradient(rgba(30, 41, 59, 0.7), rgba(30, 41, 59, 0.7)) padding-box,
     linear-gradient(to right, #3b82f6, #8b5cf6) border-box !important;
   border: 1px solid transparent !important;
-  border-radius: 9999px !important;
+  border-radius: 0.75rem !important;
   box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
 }
 
@@ -227,7 +298,7 @@ body[data-font-style="sans"][data-lang="tc"] {
 .dark .category-tag-inactive {
   background: rgba(156, 163, 175, 0.05) !important;
   border: 1px solid rgba(156, 163, 175, 0.3) !important;
-  border-radius: 9999px !important;
+  border-radius: 0.75rem !important;
 }
 
 .dark .category-tag-inactive:hover {
@@ -275,24 +346,38 @@ body[data-font-style="sans"][data-lang="tc"] {
   box-shadow: none !important;
 }
 
-/* Speak Button - Light mode: red, Dark mode: gradient with glow */
+/* Speak Button - Light mode: red, Dark mode: refined gradient with neumorphic effect */
 .speak-button {
   /* Light mode default */
-  background: #dc2626;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow:
+    0 2px 4px rgba(220, 38, 38, 0.3),
+    0 4px 8px rgba(220, 38, 38, 0.2);
 }
 
 .dark .speak-button {
-  background: linear-gradient(135deg, #7f1d1d, #450a0a) !important;
-  border: 1px solid rgba(239, 68, 68, 0.5) !important;
-  box-shadow: 0 0 10px rgba(220, 38, 38, 0.3) !important;
+  background:
+    linear-gradient(rgba(30, 41, 59, 0.7), rgba(30, 41, 59, 0.7)) padding-box,
+    linear-gradient(to right, #3b82f6, #8b5cf6) border-box !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.dark .speak-button:hover {
+  background:
+    linear-gradient(rgba(40, 51, 69, 0.8), rgba(40, 51, 69, 0.8)) padding-box,
+    linear-gradient(to right, #60a5fa, #a78bfa) border-box !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
 }
 
 .speak-button-disabled {
   /* Light mode */
   background: #f3f4f6;
+  box-shadow: none;
 }
 
 .dark .speak-button-disabled {
-  background: rgba(75, 85, 99, 0.5) !important;
-  border: 1px solid rgba(75, 85, 99, 0.3) !important;
+  background: rgba(75, 85, 99, 0.3) !important;
+  border: 1px solid rgba(75, 85, 99, 0.2) !important;
+  box-shadow: none !important;
 }

@@ -15,7 +15,7 @@ const defaultSettings: Settings = {
   theme: "dark",
   lang: "sc",
   fontStyle: "serif",
-  fontSize: 16,
+  fontSize: 15,
 };
 
 // 创建 Context
@@ -36,9 +36,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // 兼容旧数据：如果 fontSize 是字符串，重置为 16
+        // 兼容旧数据：如果 fontSize 是字符串，重置为 15
         if (typeof parsed.fontSize === 'string') {
-          parsed.fontSize = 16;
+          parsed.fontSize = 15;
         }
         setSettings({ ...defaultSettings, ...parsed });
       } catch (e) {
@@ -63,7 +63,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         ...defaultSettings,
         theme: "dark", // 默认使用深色模式
         lang: detectedLang,
-        fontSize: detectedFontSize,
+        fontSize: 15, // 默认 15px
         fontStyle: "serif", // 默认保持宋体
       });
     }

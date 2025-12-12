@@ -28,7 +28,7 @@ export default function Header({
   onTabChange,
   disableSticky = false
 }: HeaderProps) {
-  const { settings } = useTheme();
+  const { settings, updateSettings } = useTheme();
   const [showBadge, setShowBadge] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
 
@@ -39,8 +39,15 @@ export default function Header({
       setShowBadge(true);
     }
 
-    const lastSeen = localStorage.getItem("banner-last-seen-date");
-    if (lastSeen !== today) {
+    // Banner: check if 7 days have passed since last dismissal
+    const lastSeenTimestamp = localStorage.getItem("banner-last-seen-timestamp");
+    if (lastSeenTimestamp) {
+      const daysSinceDismiss = (Date.now() - parseInt(lastSeenTimestamp)) / (1000 * 60 * 60 * 24);
+      if (daysSinceDismiss >= 7) {
+        setShowBanner(true);
+      }
+    } else {
+      // First time visitor, show banner
       setShowBanner(true);
     }
   }, []);
@@ -54,8 +61,8 @@ export default function Header({
 
   const closeBanner = () => {
     setShowBanner(false);
-    const today = new Date().toDateString();
-    localStorage.setItem("banner-last-seen-date", today);
+    // Store timestamp for 7-day check
+    localStorage.setItem("banner-last-seen-timestamp", Date.now().toString());
   };
 
   const text3DStyle = {
@@ -150,6 +157,18 @@ export default function Header({
                 {favCount > 0 && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0b0d12]" />
                 )}
+              </button>
+
+              {/* Language Toggle Button */}
+              <button
+                onClick={() => updateSettings({ lang: settings.lang === 'sc' ? 'tc' : 'sc' })}
+                className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200"
+                style={icon3DStyle}
+                title={settings.lang === 'sc' ? '切换到繁体' : '切換到簡體'}
+              >
+                <span className="w-5 h-5 flex items-center justify-center text-base font-bold text-[var(--text-main)] dark:text-gray-200">
+                  {settings.lang === 'sc' ? '繁' : '简'}
+                </span>
               </button>
 
               <button

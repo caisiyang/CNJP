@@ -303,7 +303,7 @@ export default function BulletinBoard() {
             {showStatsModal && typeof document !== 'undefined' && createPortal(
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-200">
                     <div
-                        className="bg-white dark:bg-[#1a1a2e] w-full max-w-sm rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100 dark:border-white/10 max-h-[70vh] flex flex-col"
+                        className="bg-white dark:bg-[#1a1a2e] modal-content w-full max-w-sm rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100 dark:border-white/10 max-h-[70vh] flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10 shrink-0">
@@ -362,7 +362,7 @@ export default function BulletinBoard() {
             {showModal && typeof document !== 'undefined' && createPortal(
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-200">
                     <div
-                        className="bg-white dark:bg-[#1a1a2e] w-full max-w-sm rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100 dark:border-white/10 max-h-[80vh] flex flex-col"
+                        className="bg-white dark:bg-[#1a1a2e] modal-content w-full max-w-sm rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100 dark:border-white/10 max-h-[80vh] flex flex-col"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10 shrink-0">

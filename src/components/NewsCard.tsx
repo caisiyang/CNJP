@@ -79,7 +79,7 @@ export default function NewsCard({
         <>
             <div
                 onClick={() => setIsModalOpen(true)}
-                className="w-full bg-white dark:bg-card p-4 rounded-xl shadow-md dark:shadow-none md:hover:shadow-xl md:hover:-translate-y-1 active:scale-[0.98] md:active:scale-100 transition-all duration-300 cursor-pointer border border-transparent dark:border-white/5 group relative overflow-hidden"
+                className="w-full bg-white dark:bg-white/[0.03] p-4 rounded-xl shadow-md dark:shadow-none md:hover:shadow-xl dark:md:hover:bg-white/[0.06] md:hover:-translate-y-1 active:scale-[0.98] md:active:scale-100 transition-all duration-300 cursor-pointer border border-transparent dark:border-white/5 group relative overflow-hidden"
             >
                 {/* Top Row: Category | Source • Time ... Fav */}
                 <div className="flex items-center justify-between mb-2">

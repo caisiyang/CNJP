@@ -23,27 +23,21 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       {/* 背景遮罩 */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* 模态框主体 */}
-      <div className="relative w-full max-w-sm bg-white dark:bg-[#1e1e1e] rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
-        
-        {/* 隐藏滚动条 CSS: 保持滚动功能，但不可见 */}
-        <style jsx>{`
-          .no-scrollbar::-webkit-scrollbar { display: none; }
-          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        `}</style>
+      <div className="relative w-full max-w-sm bg-white dark:bg-[#1e1e1e] modal-content rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[85vh]">
 
         {/* 标题栏 (固定) */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-black/5 dark:border-white/5 bg-white dark:bg-[#1e1e1e] z-10 shrink-0">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-black/5 dark:border-white/5 z-10 shrink-0">
           <div className="flex items-center gap-2">
-             <Info className="w-5 h-5 text-[var(--primary)]" />
-             <h2 style={fontStyle} className="text-xl font-bold text-[var(--text-main)]">
-                {settings.lang === "sc" ? "关于本站" : "關於本站"}
-             </h2>
+            <Info className="w-5 h-5 text-[var(--primary)]" />
+            <h2 style={fontStyle} className="text-xl font-bold text-[var(--text-main)]">
+              {settings.lang === "sc" ? "关于本站" : "關於本站"}
+            </h2>
           </div>
           <button onClick={onClose} className="p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
             <X className="w-6 h-6 text-[var(--text-sub)]" />
@@ -54,9 +48,9 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
            内容区域 (可滚动)
            p-6 (24px): 统一设置四周内边距，确保左右留白完全一致，实现完美居中。
         */}
-        <div className="overflow-y-auto no-scrollbar p-6">
+        <div className="overflow-y-auto custom-scrollbar p-6">
           <div className="space-y-4 text-sm leading-7 text-[var(--text-main)] opacity-90 text-justify" style={fontStyle}>
-            
+
             {/* 简体中文内容 */}
             {settings.lang === "sc" ? (
               <>
@@ -100,9 +94,9 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             {/* 打赏二维码区域 */}
             <div className="pt-6 flex flex-col items-center gap-3">
               <div className="p-2 bg-white rounded-xl shadow-sm border border-black/5">
-                <img 
-                  src="/qrcode.jpg" 
-                  alt="Donate QR Code" 
+                <img
+                  src="/qrcode.jpg"
+                  alt="Donate QR Code"
                   className="w-[180px] h-[180px] object-contain rounded-lg"
                 />
               </div>
@@ -112,11 +106,11 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             </div>
 
           </div>
-          
+
           <div className="pt-8 pb-2 text-center">
-             <p className="text-xs text-[var(--text-sub)] opacity-50">
-                © 2025 China News From Japan
-             </p>
+            <p className="text-xs text-[var(--text-sub)] opacity-50">
+              © 2025 China News From Japan
+            </p>
           </div>
         </div>
       </div>
