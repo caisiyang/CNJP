@@ -696,7 +696,7 @@ export default function Home() {
         }}
       />
 
-      <main className="max-w-[600px] mx-auto pb-10 relative">
+      <main className="max-w-[600px] lg:max-w-[1200px] mx-auto pb-10 relative">
         <AnimatePresence mode="wait">
           {activeTab === 'news' && (
             <motion.div
@@ -733,9 +733,9 @@ export default function Home() {
                 )}
               </AnimatePresence>
 
-              <div ref={searchBarRef} className={`relative max-w-[600px] mx-auto px-4 mb-3.5 ${(showSuggestions || showArchiveDrawer) ? "z-[200]" : "z-30"}`}>
+              <div ref={searchBarRef} className={`relative max-w-[600px] lg:max-w-[1200px] mx-auto px-4 mb-3.5 ${(showSuggestions || showArchiveDrawer) ? "z-[200]" : "z-30"}`}>
                 {/* Search & Tool Bar */}
-                <div className="search-bar-container w-full max-w-[600px] h-[52px] mx-auto flex items-center px-1 dark:px-2 mt-2 backdrop-blur-md">
+                <div className="search-bar-container w-full max-w-[600px] lg:max-w-[1200px] h-[52px] mx-auto flex items-center px-1 dark:px-2 mt-2 backdrop-blur-md">
 
                   {/* Left: Search Input */}
                   <div className="flex-1 flex items-center h-full px-3 gap-2">

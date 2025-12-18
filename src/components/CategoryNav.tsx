@@ -190,7 +190,7 @@ export default function CategoryNav({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <nav className="category-nav-container w-full max-w-[600px] h-[52px] dark:h-auto mx-auto flex items-center px-1 dark:px-0 mt-3 overflow-hidden dark:py-1">
+      <nav className="category-nav-container w-full max-w-[600px] lg:max-w-[1200px] h-[52px] dark:h-auto mx-auto flex items-center px-1 dark:px-0 mt-3 overflow-hidden dark:py-1">
         <div className="relative flex-1 overflow-hidden">
           <div
             ref={contentRef}

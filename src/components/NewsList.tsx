@@ -29,8 +29,8 @@ export default function NewsList({
   // Loading state - Show skeleton screens
   if (isLoading) {
     return (
-      <div className="px-4 space-y-3">
-        {Array.from({ length: 6 }).map((_, i) => (
+      <div className="px-4 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 lg:pb-6">
+        {Array.from({ length: 12 }).map((_, i) => (
           <NewsCardSkeleton key={i} />
         ))}
       </div>
@@ -55,7 +55,7 @@ export default function NewsList({
 
   // Normal state - Render news cards
   return (
-    <div className="px-4 space-y-3">
+    <div className="px-4 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 lg:pb-6">
       {news.map((item, i) => {
         const isFav = favorites.some((f) => f.link === item.link);
         return (

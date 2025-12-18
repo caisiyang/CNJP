@@ -232,7 +232,7 @@ export default function BulletinBoard() {
 
     return (
         <div className="w-full mb-3">
-            <div className="bulletin-container w-full max-w-[600px] h-[52px] mx-auto flex items-center px-1 dark:px-0 mt-3 overflow-hidden">
+            <div className="bulletin-container w-full max-w-[600px] lg:max-w-[1200px] h-[52px] mx-auto flex items-center px-1 dark:px-0 mt-3 overflow-hidden">
 
                 {/* Left Label */}
                 <div className="flex items-center gap-1.5 pl-1 pr-3 border-r border-gray-100 dark:border-white/10 shrink-0 h-4">

@@ -118,36 +118,42 @@ export default function Header({
       )}
 
       <header className={`${disableSticky ? '' : 'sticky top-0'} w-full bg-white/95 dark:bg-transparent backdrop-blur-md z-50 shadow-sm dark:shadow-none transition-all duration-300 border-b border-gray-200/50 dark:border-white/5`}>
-        <div className="relative max-w-[600px] mx-auto px-4 pt-4 pb-3">
+        <div className="relative max-w-[600px] lg:max-w-[1200px] mx-auto px-4 pt-4 pb-3">
 
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={onRefresh}
-              className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity active:scale-95 duration-200 group"
-              title={settings.lang === "sc" ? "点击刷新" : "點擊刷新"}
-            >
-              <div className="flex flex-col justify-center w-fit ml-7 mt-1">
-                <h1
-                  style={{ ...text3DStyle, fontFamily: "'Noto Serif SC', 'Songti SC', serif" }}
-                  className="text-xl font-bold tracking-wide text-[var(--text-main)] text-gradient-animated leading-none whitespace-nowrap"
-                >
-                  {settings.lang === "sc" ? "从日本看中国" : "從日本看中國"}
-                </h1>
+          <div className="flex items-center justify-between mb-4 lg:mb-8 relative">
+            {/* Title Wrapper - Absolute centered on large screens to avoid button interference */}
+            <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:z-10">
+              <button
+                onClick={onRefresh}
+                className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity active:scale-95 duration-200 group"
+                title={settings.lang === "sc" ? "点击刷新" : "點擊刷新"}
+              >
+                <div className="flex flex-col justify-center w-fit ml-7 lg:ml-0 mt-1 lg:items-center">
+                  <h1
+                    style={{ ...text3DStyle, fontFamily: "'Noto Serif SC', 'Songti SC', serif" }}
+                    className="text-xl lg:text-3xl font-bold tracking-wide text-[var(--text-main)] text-gradient-animated leading-none whitespace-nowrap"
+                  >
+                    {settings.lang === "sc" ? "从日本看中国" : "從日本看中國"}
+                  </h1>
 
-                <div
-                  className="w-full flex justify-between text-[0.6em] text-gray-400 font-sans mt-[3px] select-none font-medium"
-                  style={{ textShadow: "0 1px 1px rgba(0,0,0,0.1)" }}
-                >
-                  {englishText.split('').map((char, index) => (
-                    <span key={index} className={char === ' ' ? 'w-[0.5em]' : ''}>
-                      {char === ' ' ? '\u00A0' : char}
-                    </span>
-                  ))}
+                  <div
+                    className="w-full flex justify-between text-[0.6em] text-gray-400 font-sans mt-[3px] select-none font-medium"
+                    style={{ textShadow: "0 1px 1px rgba(0,0,0,0.1)" }}
+                  >
+                    {englishText.split('').map((char, index) => (
+                      <span key={index} className={char === ' ' ? 'w-[0.5em]' : ''}>
+                        {char === ' ' ? '\u00A0' : char}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </button>
+              </button>
+            </div>
 
-            <div className="flex items-center gap-1">
+            {/* Placeholder to maintain flex layout for buttons if needed, or just let buttons float right */}
+            <div className="hidden lg:block w-10 h-10" />
+
+            <div className="flex items-center gap-1 z-20">
               <button
                 onClick={onOpenFav}
                 className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all active:scale-90 duration-200 relative group"
@@ -195,10 +201,12 @@ export default function Header({
             </div>
           </div>
 
-          <BulletinBoard />
+          <div className="bulletin-container w-full max-w-[600px] lg:max-w-[1200px] mx-auto">
+            <BulletinBoard />
+          </div>
 
           {/* Tab Bar */}
-          <div className="tab-container w-full max-w-[600px] h-[52px] mx-auto flex items-center gap-2 dark:gap-3 px-1.5 dark:px-0 mt-3 overflow-hidden">
+          <div className="tab-container w-full max-w-[600px] lg:max-w-[1200px] h-[52px] mx-auto flex items-center gap-2 dark:gap-3 px-1.5 dark:px-0 mt-3 overflow-hidden">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
 
