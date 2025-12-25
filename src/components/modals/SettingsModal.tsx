@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Moon, Sun, Monitor } from "lucide-react";
+import { X, Moon, Sun, Monitor, Download } from "lucide-react";
 import { useTheme } from "../ThemeContext";
 
 interface SettingsModalProps {
@@ -71,42 +71,26 @@ export default function SettingsModal({
             </div>
           </div>
 
-          {/* 2. Default Startup Tab */}
+          {/* 2. PWA Install / Reset Guide */}
           <div className="col-span-2 space-y-3">
             <label style={fontStyleObj} className="text-xs font-bold text-[var(--text-sub)] uppercase tracking-wider">
-              {settings.lang === "sc" ? "默认启动页" : "默認啟動頁"}
+              {settings.lang === "sc" ? "安装本站 APP" : "安裝本站 APP"}
             </label>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { id: "news", label: settings.lang === "sc" ? "新闻" : "新聞" },
-                { id: "live", label: settings.lang === "sc" ? "直播" : "直播" },
-                { id: "disaster", label: settings.lang === "sc" ? "灾害" : "災害" },
-              ].map((tab) => {
-                // Logic to check if this is the current default
-                const isDefault = (typeof window !== 'undefined' ? localStorage.getItem("default_tab") : "news") === tab.id || (!localStorage.getItem("default_tab") && tab.id === "news");
-
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => {
-                      localStorage.setItem("default_tab", tab.id);
-                      // Force re-render to update UI state is tricky here without local state, 
-                      // but we can just use a forceUpdate or rely on user closing modal.
-                      // For better UX, let's use a simple state in this component if needed, 
-                      // but for now let's just re-render by calling updateSettings with same params to trigger context update or just let it be.
-                      // Actually, better to just update a local state to show selection immediately.
-                      updateSettings({ ...settings }); // Dummy update to trigger re-render
-                    }}
-                    className={`py-2 rounded-xl border text-xs font-bold transition-all ${(typeof window !== 'undefined' && (localStorage.getItem("default_tab") || "news") === tab.id)
-                      ? "settings-modal-active"
-                      : "bg-gray-50 dark:bg-white/[0.05] text-[var(--text-sub)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10"
-                      }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
+            <button
+              onClick={() => {
+                const hadKey = localStorage.getItem("pwa-prompt-dismissed");
+                localStorage.removeItem("pwa-prompt-dismissed");
+                console.log("[Settings] Cleared PWA prompt dismissal. Previous value:", hadKey);
+                alert(settings.lang === "sc" ? "已重置引导，页面将刷新" : "已重置引導，頁面將刷新");
+                window.location.reload();
+              }}
+              className="w-full py-2.5 rounded-xl border bg-gray-50 dark:bg-white/[0.05] text-[var(--text-main)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 group"
+            >
+              <Download className="w-4 h-4 text-[var(--text-sub)] group-hover:text-[var(--primary)] transition-colors" />
+              <span className="text-xs font-bold">
+                {settings.lang === "sc" ? "添加到桌面 / 重置引导" : "添加到桌面 / 重置引導"}
+              </span>
+            </button>
           </div>
 
           {/* 3. Font Style (Full Width - horizontal) */}
