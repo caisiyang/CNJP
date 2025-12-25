@@ -78,10 +78,7 @@ export default function SettingsModal({
             </label>
             <button
               onClick={() => {
-                const hadKey = localStorage.getItem("pwa-prompt-dismissed");
                 localStorage.removeItem("pwa-prompt-dismissed");
-                console.log("[Settings] Cleared PWA prompt dismissal. Previous value:", hadKey);
-                alert(settings.lang === "sc" ? "已重置引导，页面将刷新" : "已重置引導，頁面將刷新");
                 window.location.reload();
               }}
               className="w-full py-2.5 rounded-xl border bg-gray-50 dark:bg-white/[0.05] text-[var(--text-main)] border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center justify-center gap-2 group"

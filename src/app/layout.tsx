@@ -57,9 +57,10 @@ export const metadata: Metadata = {
 
   // ✅ iOS 图标配置
   icons: {
-    icon: "/icon-192.png",
+    icon: "/logo-192.png",
+    shortcut: "/logo.png",
     apple: [
-      { url: "/icon-192.png" },
+      { url: "/logo-192.png" },
     ],
   },
 };

@@ -44,7 +44,6 @@ export default function PWAInstallPrompt() {
 
         // For Android/Desktop, listen for beforeinstallprompt
         const handleBeforeInstallPrompt = (e: Event) => {
-            console.log("[PWA] Captured beforeinstallprompt event");
             e.preventDefault();
             setDeferredPrompt(e as BeforeInstallPromptEvent);
             // Show custom prompt after a short delay
