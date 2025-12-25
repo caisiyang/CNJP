@@ -176,25 +176,14 @@ body[data-font-style="sans"][data-lang="tc"] {
   background: #050608 !important;
 }
 
-/* PWA Safe Area Support - For standalone mode & black-translucent */
-@media (display-mode: standalone),
-(display-mode: fullscreen) {
-  :root {
-    --safe-area-inset-top: env(safe-area-inset-top, 0px);
-    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  body {
-    padding-top: var(--safe-area-inset-top);
-  }
-
+/* PWA Safe Area Support - Only for standalone mode */
+@media (display-mode: standalone) {
   header {
-    /* Adjusted padding to sit nicely below the status bar */
-    padding-top: calc(var(--safe-area-inset-top) + 0.5rem) !important;
+    padding-top: env(safe-area-inset-top) !important;
   }
 
   main {
-    padding-bottom: calc(var(--safe-area-inset-bottom) + 2rem) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
   }
 }
 
@@ -509,4 +498,14 @@ body[data-font-style="sans"][data-lang="tc"] {
   animation: text-shine 10s linear infinite;
   text-shadow: none !important;
   /* Remove shadow to ensure clean gradient text */
+}
+
+/* Shimmer animation for skeleton loading states */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

@@ -14,6 +14,7 @@ import ArchiveDrawer from "@/components/ArchiveDrawer";
 import BackToTop from "@/components/BackToTop";
 import LiveView from "@/components/LiveView";
 import DisasterSection from "@/components/disaster/DisasterSection";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import { Search, Loader2, X, Flame, Calendar, ArrowUpDown } from "lucide-react";
 import { useTheme } from "@/components/ThemeContext";
 import { CATEGORY_MAP } from "@/lib/constants";
@@ -1009,6 +1010,9 @@ export default function Home() {
         favorites={favorites}
         currentFilter={currentFilter}
       />
+
+      {/* PWA Install Prompt */}
+      <PWAInstallPrompt />
     </div>
   );
 }

@@ -13,7 +13,7 @@ type SubTab = 'weather' | 'earthquake' | 'other';
 
 export default function DisasterSection() {
     const { settings } = useTheme();
-    const [activeSubTab, setActiveSubTab] = useState<SubTab>('weather');
+    const [activeSubTab, setActiveSubTab] = useState<SubTab>('earthquake');
     const [currentCity, setCurrentCity] = useState("东京");
 
     return (
@@ -21,18 +21,18 @@ export default function DisasterSection() {
             {/* Sub-Navigation */}
             <nav className="flex items-center gap-3 px-4 py-2 overflow-x-auto scrollbar-hide">
                 <NavButton
-                    isActive={activeSubTab === 'weather'}
-                    onClick={() => setActiveSubTab('weather')}
-                    icon={<CloudSun className="w-4 h-4" />}
-                    label={settings.lang === "sc" ? "天气" : "天氣"}
-                    color="text-orange-500"
-                />
-                <NavButton
                     isActive={activeSubTab === 'earthquake'}
                     onClick={() => setActiveSubTab('earthquake')}
                     icon={<Activity className="w-4 h-4" />}
                     label={settings.lang === "sc" ? "地震" : "地震"}
                     color="text-red-500"
+                />
+                <NavButton
+                    isActive={activeSubTab === 'weather'}
+                    onClick={() => setActiveSubTab('weather')}
+                    icon={<CloudSun className="w-4 h-4" />}
+                    label={settings.lang === "sc" ? "天气" : "天氣"}
+                    color="text-orange-500"
                 />
                 <NavButton
                     isActive={activeSubTab === 'other'}
@@ -53,13 +53,16 @@ export default function DisasterSection() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.2 }}
+                            className="flex flex-col lg:flex-row gap-4"
                         >
-                            <WeatherView onCityChange={setCurrentCity} />
+                            <div className="flex-1 min-w-0 h-full">
+                                <WeatherView onCityChange={setCurrentCity} />
+                            </div>
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 }}
-                                className="mt-4"
+                                className="flex-1 min-w-0 h-full"
                             >
                                 <CityEncyclopediaCard cityName={currentCity} />
                             </motion.div>

@@ -18,22 +18,48 @@ import "./globals.css";
 import { Providers } from "../components/Providers";
 
 export const metadata: Metadata = {
-  title: "China News from Japan | 从日本看中国",
-  description: "100条日媒最新发布的中国新闻聚合",
+  title: "从日本看中国 | China News From Japan",
+  description: "汇集日本媒体关于中国的最新报道，实时更新100条日媒中国新闻",
   manifest: "/manifest.json",
+
+  // Open Graph - for social sharing
+  openGraph: {
+    title: "从日本看中国",
+    description: "汇集日本媒体关于中国的最新报道，实时更新",
+    url: "https://cn.saaaai.com",
+    siteName: "从日本看中国",
+    images: [
+      {
+        url: "/icon-512.png",
+        width: 512,
+        height: 512,
+        alt: "从日本看中国",
+      },
+    ],
+    locale: "zh_CN",
+    type: "website",
+  },
+
+  // Twitter Card
+  twitter: {
+    card: "summary",
+    title: "从日本看中国",
+    description: "汇集日本媒体关于中国的最新报道，实时更新",
+    images: ["/icon-512.png"],
+  },
 
   // ✅ iOS 桌面标题配置
   appleWebApp: {
     capable: true,
-    title: "从日本看中国",
+    title: "从日本看中国 | China News From Japan",
     statusBarStyle: "black-translucent",
   },
 
-  // ✅ iOS 图标配置：直接指向 logo.png
+  // ✅ iOS 图标配置
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon-192.png",
     apple: [
-      { url: "/logo.png" }, // iPhone 会自动把大图缩放成适合它的大小
+      { url: "/icon-192.png" },
     ],
   },
 };
@@ -57,10 +83,37 @@ export default function RootLayout({
       lang="zh-CN"
       suppressHydrationWarning
     >
+      <head>
+        {/* Umami Analytics - Privacy-friendly analytics */}
+        {/* Replace YOUR_WEBSITE_ID with your actual Umami website ID */}
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="8690c5cf-acc5-4f08-8246-4dc3bf55e366"
+        />
+      </head>
       <body className="antialiased bg-background text-main">
         <Providers>
           {children}
         </Providers>
+        {/* Service Worker Registration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                      console.log('SW registered:', registration.scope);
+                    })
+                    .catch(function(error) {
+                      console.log('SW registration failed:', error);
+                    });
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );

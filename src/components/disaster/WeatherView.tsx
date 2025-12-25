@@ -44,6 +44,7 @@ export default function WeatherView({ onCityChange }: { onCityChange?: (cityName
     const [data, setData] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState(true);
     const [isCityMenuOpen, setIsCityMenuOpen] = useState(false);
+    const [isSaved, setIsSaved] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     // Sync selected city with parent
@@ -94,8 +95,16 @@ export default function WeatherView({ onCityChange }: { onCityChange?: (cityName
 
     const selectCity = (city: City) => {
         setSelectedCity(city);
-        localStorage.setItem("cnjp_weather_city", city.name);
+        // Removed auto-save to allow transient viewing
         setIsCityMenuOpen(false);
+        setIsSaved(false); // Reset saved state on change
+    };
+
+    const handleSaveDefault = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent toggling menu if bubble
+        localStorage.setItem("cnjp_weather_city", selectedCity.name);
+        setIsSaved(true);
+        setTimeout(() => setIsSaved(false), 2000);
     };
 
     const getWeatherIcon = (code: number, size: string = "w-6 h-6") => {
@@ -119,25 +128,37 @@ export default function WeatherView({ onCityChange }: { onCityChange?: (cityName
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full h-full">
             {/* Unified Weather Card - Static White/Gray Style */}
-            <div className="luxury-card relative rounded-[32px] overflow-visible transition-all duration-300 z-20">
+            <div className="luxury-card relative rounded-[32px] overflow-hidden transition-all duration-300 z-20 h-full min-h-[420px] flex flex-col">
 
                 {/* 1. Header: Location & Date */}
-                <div className="p-8 pb-4 flex justify-between items-start">
-                    {/* City Button Selector */}
-                    <div className="relative" ref={menuRef}>
-                        <button
-                            onClick={() => setIsCityMenuOpen(!isCityMenuOpen)}
-                            className="flex items-center gap-2 text-2xl font-bold text-gray-800 dark:text-gray-100 hover:bg-black/5 dark:hover:bg-white/10 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
-                        >
-                            <MapPin className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-                            <span>{settings.lang === "sc" ? selectedCity.name : selectedCity.name_tc}</span>
-                            <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isCityMenuOpen ? 'rotate-180' : ''}`} />
-                        </button>
-                        <div className="text-[10px] pl-4 mt-1 text-gray-400 dark:text-gray-500 font-medium tracking-wider uppercase">
-                            {settings.lang === "sc" ? "点击切换" : "點擊切換"}
+                <div className="relative px-8 pt-8 pb-4 flex items-center justify-between z-10 shrink-0">
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-3 group cursor-pointer" onClick={() => setIsCityMenuOpen(!isCityMenuOpen)}>
+                            <MapPin className="w-6 h-6 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                            <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                                {settings.lang === "sc" ? selectedCity.name : selectedCity.name_tc}
+                            </h2>
+                            <ChevronDown className={`w-6 h-6 text-gray-400 transition-transform duration-300 ${isCityMenuOpen ? 'rotate-180' : ''}`} />
                         </div>
+                        {/* Save Default Button */}
+                        <button
+                            onClick={handleSaveDefault}
+                            className={`mt-2 text-sm px-3 py-1 rounded-full transition-all w-fit flex items-center gap-1 ${isSaved
+                                    ? "bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400"
+                                    : "text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20"
+                                }`}
+                        >
+                            {isSaved ? (
+                                <>
+                                    <span>✓</span>
+                                    <span>{settings.lang === "sc" ? "已默认" : "已默認"}</span>
+                                </>
+                            ) : (
+                                <span>{settings.lang === "sc" ? "设为默认" : "設為默認"}</span>
+                            )}
+                        </button>
 
                         {/* Custom City Popup */}
                         <AnimatePresence>
@@ -147,7 +168,7 @@ export default function WeatherView({ onCityChange }: { onCityChange?: (cityName
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                     transition={{ duration: 0.1 }}
-                                    className="absolute top-16 left-0 w-64 p-4 bg-white dark:bg-[#252525] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50"
+                                    className="absolute top-24 left-8 w-72 p-4 bg-white dark:bg-[#252525] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 z-50"
                                 >
                                     <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 px-1">
                                         {settings.lang === "sc" ? "选择城市" : "選擇城市"}
@@ -180,35 +201,34 @@ export default function WeatherView({ onCityChange }: { onCityChange?: (cityName
                 </div>
 
                 {/* 2. Current Weather Big View */}
-                <div className="px-8 py-6 flex flex-col items-center justify-center">
-                    {loading ? (
-                        <div className="h-32 flex items-center justify-center">
-                            <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
-                        </div>
-                    ) : data ? (
-                        <div className="flex items-center gap-8">
-                            <div className="drop-shadow-sm">
-                                {getWeatherIcon(data.current_weather.weathercode, "w-32 h-32")}
+                <div className="px-8 py-6 flex flex-col items-center justify-center flex-1">
+                    {
+                        loading ? (
+                            <div className="flex-1 w-full flex items-center justify-center">
+                                <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
                             </div>
-                            <div className="flex flex-col items-start">
-                                <span className="text-8xl font-bold tracking-tighter text-gray-800 dark:text-white">
-                                    {Math.round(data.current_weather.temperature)}°
-                                </span>
-                                <span className="text-lg font-medium text-gray-500 dark:text-gray-400 pl-2">
-                                    {settings.lang === "sc" ? "当前气温" : "當前氣溫"}
-                                </span>
+                        ) : data ? (
+                            <div className="flex items-center gap-8">
+                                <div className="drop-shadow-sm">
+                                    {getWeatherIcon(data.current_weather.weathercode, "w-32 h-32")}
+                                </div>
+                                <div className="flex flex-col items-start">
+                                    <span className="text-8xl font-bold tracking-tighter text-gray-800 dark:text-white">
+                                        {Math.round(data.current_weather.temperature)}°
+                                    </span>
+                                    <span className="text-lg font-medium text-gray-500 dark:text-gray-400 pl-2">
+                                        {settings.lang === "sc" ? "当前气温" : "當前氣溫"}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        <div className="text-2xl text-gray-300">--</div>
-                    )}
+                        ) : (
+                            <div className="text-2xl text-gray-300">--</div>
+                        )
+                    }
                 </div>
 
-                {/* 3. Divider */}
-
-
                 {/* 4. 5-Day Forecast Row */}
-                <div className="p-6 bg-gray-50/50 dark:bg-white/5 rounded-b-[32px]">
+                <div className="p-6 bg-gray-50/50 dark:bg-white/5 shrink-0">
                     {loading ? (
                         <div className="text-center text-gray-400 text-sm">Loading forecast...</div>
                     ) : data ? (

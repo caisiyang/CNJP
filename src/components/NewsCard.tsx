@@ -1,9 +1,10 @@
 "use client";
 
+import React, { memo, useState, useMemo } from "react";
+import Image from "next/image";
 import { useTheme } from "./ThemeContext";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN, zhTW } from "date-fns/locale";
-import { useState } from "react";
 import Modal from "./Modal";
 import { CATEGORY_MAP, CATEGORY_DOT_COLORS } from "@/lib/constants";
 import { Heart, ExternalLink, Tag } from "lucide-react";
@@ -33,7 +34,7 @@ const SC_TO_TC_CATEGORY: Record<string, string> = {
     "科技": "科技", "体育": "體育", "其他": "其他",
 };
 
-export default function NewsCard({
+function NewsCardComponent({
     item,
     isFav = false,
     onToggleFav,
@@ -41,36 +42,44 @@ export default function NewsCard({
 }: NewsCardProps) {
     const { settings } = useTheme();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [logoError, setLogoError] = useState(false);
 
-    let timeDisplay = item.time_str;
-    if (item.timestamp && !timeDisplay) {
-        try {
-            timeDisplay = formatDistanceToNow(new Date(item.timestamp * 1000), {
-                addSuffix: true,
-                locale: settings.lang === "sc" ? zhCN : zhTW,
-            });
-        } catch (e) {
-            timeDisplay = "";
+    // Memoize time display to avoid recalculating on every render
+    const timeDisplay = useMemo(() => {
+        if (item.time_str) return item.time_str;
+        if (item.timestamp) {
+            try {
+                return formatDistanceToNow(new Date(item.timestamp * 1000), {
+                    addSuffix: true,
+                    locale: settings.lang === "sc" ? zhCN : zhTW,
+                });
+            } catch (e) {
+                return "";
+            }
         }
-    }
+        return "";
+    }, [item.time_str, item.timestamp, settings.lang]);
 
-    const rawCategory = item.category || "其他";
-    let displayCategory = rawCategory.substring(0, 2);
-    if (settings.lang === "tc") {
-        displayCategory = SC_TO_TC_CATEGORY[displayCategory] || displayCategory;
-    }
+    // Memoize category display
+    const { displayCategory, categoryKey, dotColor } = useMemo(() => {
+        const rawCategory = item.category || "其他";
+        let displayCat = rawCategory.substring(0, 2);
+        if (settings.lang === "tc") {
+            displayCat = SC_TO_TC_CATEGORY[displayCat] || displayCat;
+        }
+        const catKey = CATEGORY_MAP[rawCategory] || "other";
+        const color = CATEGORY_DOT_COLORS[catKey] || "bg-gray-400";
+        return { displayCategory: displayCat, categoryKey: catKey, dotColor: color };
+    }, [item.category, settings.lang]);
 
-    const categoryKey = CATEGORY_MAP[rawCategory] || "other";
-    const dotColor = CATEGORY_DOT_COLORS[categoryKey] || "bg-gray-400";
-
-    const displayTitle = (settings.lang === "tc" && item.title_tc)
-        ? item.title_tc
-        : item.title;
+    // Memoize title display
+    const displayTitle = useMemo(() => {
+        return (settings.lang === "tc" && item.title_tc) ? item.title_tc : item.title;
+    }, [settings.lang, item.title, item.title_tc]);
 
     const handleCategoryClick = () => {
         if (onFilterCategory && item.category) {
-            const catKey = CATEGORY_MAP[item.category] || "other";
-            onFilterCategory(catKey);
+            onFilterCategory(categoryKey);
             setIsModalOpen(false);
         }
     };
@@ -100,14 +109,18 @@ export default function NewsCard({
 
                         <span className="text-gray-300 dark:text-gray-700">|</span>
 
-                        {/* Source */}
+                        {/* Source with optimized logo */}
                         <div className="flex items-center gap-1.5">
-                            {item.logo && (
-                                <img
+                            {item.logo && !logoError && (
+                                <Image
                                     src={item.logo}
-                                    alt="logo"
-                                    className="w-3 h-3 object-contain opacity-60 grayscale"
-                                    onError={(e) => e.currentTarget.style.display = 'none'}
+                                    alt=""
+                                    width={12}
+                                    height={12}
+                                    className="object-contain opacity-60 grayscale"
+                                    onError={() => setLogoError(true)}
+                                    loading="lazy"
+                                    unoptimized // External URLs need this
                                 />
                             )}
                             <span className="text-[var(--text-aux)] font-medium tracking-wide">
@@ -140,7 +153,6 @@ export default function NewsCard({
                     style={{
                         textShadow: '0 1px 2px rgba(0,0,0,0.08)'
                     }}
-                    // Fix: Changed group-hover to md:group-hover to prevent sticky hover on mobile
                     className="text-[16px] font-bold leading-[1.5] text-[var(--text-main)] line-clamp-2 md:group-hover:text-[var(--primary)] transition-colors"
                 >
                     {displayTitle}
@@ -213,3 +225,14 @@ export default function NewsCard({
         </>
     );
 }
+
+// React.memo with custom comparison to prevent unnecessary re-renders
+const NewsCard = memo(NewsCardComponent, (prevProps, nextProps) => {
+    return (
+        prevProps.item.link === nextProps.item.link &&
+        prevProps.isFav === nextProps.isFav &&
+        prevProps.item.title === nextProps.item.title
+    );
+});
+
+export default NewsCard;

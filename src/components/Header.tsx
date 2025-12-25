@@ -1,10 +1,10 @@
 "use client";
 
 import { useTheme } from "./ThemeContext";
-import { Settings, Info, Heart, Tv, Sparkles, Newspaper, X, CloudRain } from "lucide-react";
+import { Settings, Info, Heart, Tv, Sparkles, Newspaper, X, CloudRain, AlertTriangle } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 interface HeaderProps {
@@ -31,6 +31,81 @@ export default function Header({
   const { settings, updateSettings } = useTheme();
   const [showBadge, setShowBadge] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
+
+  /* - EARTHQUAKE ALERT LOGIC - */
+  const [quakeAlert, setQuakeAlert] = useState<{
+    id: string;
+    location: string;
+    magnitude: number;
+    shindo: string; // e.g., "5强"
+    time: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const checkEarthquake = async () => {
+      try {
+        // Fetch recent earthquakes (code 551 is standard info)
+        const res = await fetch("https://api.p2pquake.net/v2/history?codes=551&limit=5");
+        const data = await res.json();
+
+        if (!Array.isArray(data)) return;
+
+        // Thresholds: Magnitude >= 5.5 OR Max Scale >= 45 (Shindo 5-)
+        // Time window: Last 1 hour
+        const ONE_HOUR = 60 * 60 * 1000;
+        const now = Date.now();
+
+        const majorQuake = data.find((item: any) => {
+          const quakeTime = new Date(item.earthquake.time).getTime();
+          const isRecent = (now - quakeTime) < ONE_HOUR;
+          const mag = item.earthquake.hypocenter.magnitude;
+          const scale = item.earthquake.maxScale;
+
+          // P2PQuake Scale: 45=5-, 50=5+, 55=6-, 60=6+, 70=7
+          const isMajor = mag >= 5.5 || scale >= 45;
+          return isRecent && isMajor;
+        });
+
+        if (majorQuake) {
+          const dismissedId = localStorage.getItem("dismissed_quake_id");
+          if (dismissedId !== majorQuake.id) {
+            // Helper to convert scale to string
+            const getShindoStr = (scale: number) => {
+              if (scale >= 70) return "7";
+              if (scale >= 60) return "6强";
+              if (scale >= 55) return "6弱";
+              if (scale >= 50) return "5强";
+              if (scale >= 45) return "5弱";
+              if (scale >= 40) return "4";
+              return "?";
+            };
+
+            setQuakeAlert({
+              id: majorQuake.id,
+              location: majorQuake.earthquake.hypocenter.name,
+              magnitude: majorQuake.earthquake.hypocenter.magnitude,
+              shindo: getShindoStr(majorQuake.earthquake.maxScale),
+              time: majorQuake.earthquake.time
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to check earthquake alerts", e);
+      }
+    };
+
+    checkEarthquake(); // Initial check
+
+    const interval = setInterval(checkEarthquake, 5 * 60 * 1000); // Check every 5 minutes
+    return () => clearInterval(interval);
+  }, []);
+
+  const dismissQuakeAlert = () => {
+    if (quakeAlert) {
+      localStorage.setItem("dismissed_quake_id", quakeAlert.id);
+      setQuakeAlert(null);
+    }
+  };
 
   useEffect(() => {
     const today = new Date().toDateString();
@@ -121,6 +196,42 @@ export default function Header({
 
   return (
     <>
+      <AnimatePresence>
+        {quakeAlert && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="w-full bg-red-600 text-white z-[100] relative overflow-hidden"
+          >
+            <div className="max-w-[600px] mx-auto px-4 py-2 flex items-start sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm">
+                  <span className="font-bold text-lg leading-none">
+                    {settings.lang === "sc" ? "地震速报" : "地震速報"}
+                  </span>
+                  <span className="opacity-90 leading-tight">
+                    {settings.lang === "sc"
+                      ? `${quakeAlert.location} 发生 M${quakeAlert.magnitude.toFixed(1)} 地震`
+                      : `${quakeAlert.location} 發生 M${quakeAlert.magnitude.toFixed(1)} 地震`}
+                  </span>
+                  <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-bold w-fit">
+                    {settings.lang === "sc" ? `震度 ${quakeAlert.shindo}` : `震度 ${quakeAlert.shindo}`}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={dismissQuakeAlert}
+                className="p-1 hover:bg-white/20 rounded-full transition-colors shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {showBanner && (
         <div className="w-full bg-gradient-to-r from-red-600 to-rose-700 text-white text-sm font-medium">
           <div className="relative max-w-[600px] mx-auto px-4 py-1.5 flex items-center justify-center gap-2">
@@ -153,7 +264,16 @@ export default function Header({
                 className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity active:scale-95 duration-200 group"
                 title={settings.lang === "sc" ? "点击刷新" : "點擊刷新"}
               >
-                <div className="flex flex-col justify-center w-fit ml-7 lg:ml-0 mt-1 lg:items-center">
+                <div className="relative w-[24px] h-[24px] lg:w-[36px] lg:h-[36px] shrink-0 category-tag-active">
+                  <Image
+                    src="/logo.png"
+                    alt="Logo"
+                    fill
+                    className="object-contain p-[2px] lg:p-[3px]"
+                    priority
+                  />
+                </div>
+                <div className="flex flex-col justify-center w-fit lg:items-center">
                   <h1
                     style={{ fontFamily: "'Noto Serif SC', 'Songti SC', serif" }}
                     className="text-xl lg:text-3xl font-bold tracking-wide text-[var(--text-main)] text-gradient-animated leading-none whitespace-nowrap"
@@ -162,7 +282,7 @@ export default function Header({
                   </h1>
 
                   <div
-                    className="w-full flex justify-between text-[0.6em] text-gray-400 font-sans mt-[3px] select-none font-medium"
+                    className="w-full flex justify-between text-[0.6em] text-gray-400 font-sans leading-none select-none font-medium"
                   >
                     {englishText.split('').map((char, index) => (
                       <span key={index} className={char === ' ' ? 'w-[0.5em]' : ''}>
