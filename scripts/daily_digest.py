@@ -153,8 +153,8 @@ def to_tc(text):
     return text 
 
 def call_ollama_safe(prompt, system, format_json=False):
-    # 自动更正 URL：如果用户只提供了域名，补全路径
-    api_url = OLLAMA_API_URL
+    # 自动更正 URL
+    api_url = OLLAMA_API_URL.strip()
     if not api_url.endswith('/api/generate') and not api_url.endswith('/api/chat'):
         api_url = api_url.rstrip('/') + '/api/generate'
 
@@ -172,22 +172,31 @@ def call_ollama_safe(prompt, system, format_json=False):
     if format_json:
         payload["format"] = "json"
 
-    # 构建 Headers
-    # 添加 User-Agent 伪装浏览器，防止 Cloudflare 拦截默认机器人请求
+    # 构建 Headers - 进一步模拟真实浏览器
     headers = {
         "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "Accept": "application/json, text/plain, */*",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Origin": "https://news.saaaai.com",
+        "Referer": "https://news.saaaai.com/"
     }
     
-    auth_status = "None"
     if CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET:
-        headers["CF-Access-Client-Id"] = CF_ACCESS_CLIENT_ID.strip()
-        headers["CF-Access-Client-Secret"] = CF_ACCESS_CLIENT_SECRET.strip()
-        auth_status = "Enabled"
+        cid = CF_ACCESS_CLIENT_ID.strip()
+        csec = CF_ACCESS_CLIENT_SECRET.strip()
+        headers["CF-Access-Client-Id"] = cid
+        headers["CF-Access-Client-Secret"] = csec
+        # 调试信息：打印 ID 的开头确认没读错空值
+        print(f"[-] [Auth] Headers Loaded: ID={cid[:4]}***, Secret={csec[:4]}***")
+    else:
+        print("[!] [Warn] CF Access Key Not Found in environment!")
 
     try:
-        # print(f"[-] DEBUG: Requesting {api_url} (Auth: {auth_status})")
         response = requests.post(api_url, json=payload, headers=headers, timeout=120)
+        if response.status_code == 403:
+            print(f"\n[!!!] Cloudflare 拒绝访问 (403)。")
+            print(f"      请检查 CF Access 策略是否包含当前的 Service Token，")
+            print(f"      且域名 {api_url} 穿透是否正常。")
         response.raise_for_status()
         res_json = response.json()
         if 'error' in res_json:
