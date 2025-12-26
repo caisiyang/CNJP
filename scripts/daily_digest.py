@@ -192,19 +192,31 @@ def call_ollama_safe(prompt, system, format_json=False):
 
     # 执行命令
     try:
-        # 使用 check=True 如果失败会抛出异常
-        result = subprocess.run(curl_cmd, capture_output=True, text=True, encoding='utf-8', timeout=180)
+        # 增加 -w 打印状态码，增加 -L 跟随重定向
+        curl_cmd_ext = curl_cmd.copy()
+        curl_cmd_ext.insert(1, "-L") # 跟随重定向
+        
+        result = subprocess.run(curl_cmd_ext, capture_output=True, text=True, encoding='utf-8', timeout=180)
         
         if result.returncode != 0:
-            print(f"[!!!] Curl 执行失败: {result.stderr}")
+            print(f"[!!!] Curl 传输层失败: {result.stderr}")
             return None
             
-        res_json = json.loads(result.stdout)
-        if 'error' in res_json:
-            print(f"\n[!!!] 模型报错: {res_json['error']}")
+        output = result.stdout.strip()
+        if not output:
+            print(f"[!!!] API 返回内容为空 (可能被拦截或解析失败)")
             return None
-            
-        return res_json.get('response')
+
+        try:
+            res_json = json.loads(output)
+            if 'error' in res_json:
+                print(f"\n[!!!] 模型报错: {res_json['error']}")
+                return None
+            return res_json.get('response')
+        except json.JSONDecodeError:
+            print(f"\n[!!!] 无法解析 API 返回的 JSON (可能是 HTML 错误页)")
+            print(f"[-] 返回内容前150位: {output[:150]}...")
+            return None
         
     except Exception as e:
         print(f"\n[!!!] Curl 调用异常: {e}\n")
