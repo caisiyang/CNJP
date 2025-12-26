@@ -1,0 +1,52 @@
+name: Daily Report Generation
+
+on:
+  schedule:
+    # 每天每4小时的第1分钟触发 (00:01, 04:01, 08:01 ...)
+    # 注意：GitHub Actions 使用 UTC 时间，日本时间(JST) = UTC+9
+    # 00:01 JST = 15:01 UTC (前一天)
+    # 所以简单的 */4 可能不能完美对应具体的 JST 小时，但作为每4小时检测一次的机制是足够的
+    - cron: '1 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # 确保 dotenv, duckduckgo_search, boto3 等被安装
+        pip install python-dotenv boto3 requests duckduckgo_search
+
+        # 尝试安装 OpenCC (可选，如果无需繁体转换可忽略或者脚本内部处理了ImportError)
+        # pip install opencc-python-reimplemented
+
+    - name: Run Daily Digest Script
+      env:
+        # R2 Secrets
+        R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+        R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+        R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+        
+        # Ollama & CF Access Secrets
+        OLLAMA_API_URL: ${{ secrets.OLLAMA_API_URL }}
+        CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+        CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        
+        # Other Configs
+        R2_SOURCE_PREFIX: "archive/"
+        R2_TARGET_PREFIX: "ollama/"
+      run: |
+        python scripts/daily_digest.py
