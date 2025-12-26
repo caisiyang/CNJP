@@ -153,6 +153,9 @@ def to_tc(text):
     return text 
 
 def call_ollama_safe(prompt, system, format_json=False):
+    import subprocess
+    import json
+    
     # 自动更正 URL
     api_url = OLLAMA_API_URL.strip()
     if not api_url.endswith('/api/generate') and not api_url.endswith('/api/chat'):
@@ -172,65 +175,73 @@ def call_ollama_safe(prompt, system, format_json=False):
     if format_json:
         payload["format"] = "json"
 
-    # 构建 Headers - 极度简化并去除可能触发 WAF 的固定字段
-    headers = {
-        "Content-Type": "application/json",
-        "Connection": "keep-alive",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    }
+    # 构建 curl 命令参数
+    curl_cmd = [
+        "curl", "-s", "-X", "POST", api_url,
+        "-H", "Content-Type: application/json",
+        "-H", f"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "-d", json.dumps(payload)
+    ]
     
     if CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET:
-        headers["CF-Access-Client-Id"] = CF_ACCESS_CLIENT_ID.strip()
-        headers["CF-Access-Client-Secret"] = CF_ACCESS_CLIENT_SECRET.strip()
-        print(f"[-] [Auth] Headers Attached (ID: {headers['CF-Access-Client-Id'][:4]}***)")
+        curl_cmd.extend([
+            "-H", f"CF-Access-Client-Id: {CF_ACCESS_CLIENT_ID.strip()}",
+            "-H", f"CF-Access-Client-Secret: {CF_ACCESS_CLIENT_SECRET.strip()}"
+        ])
+        print(f"[-] [Auth] Using System Curl with Service Token (ID: {CF_ACCESS_CLIENT_ID[:4]}***)")
 
-    # 增加重试逻辑处理 403
-    max_retries = 2
-    for attempt in range(max_retries + 1):
-        try:
-            response = requests.post(api_url, json=payload, headers=headers, timeout=180)
-            
-            if response.status_code == 403:
-                if attempt < max_retries:
-                    print(f"[!] 遭遇 403 拦截，正在进行第 {attempt+1} 次重试...")
-                    time.sleep(5)
-                    continue
-                else:
-                    print(f"\n[!!!] Cloudflare 拒绝访问 (403)。")
-                    print(f"      本地测试已通但云端 403，通常是由于 GitHub Actions IP 被 CF 软拦截。")
-            
-            response.raise_for_status()
-            res_json = response.json()
-            return res_json['response']
-            
-        except Exception as e:
-            if attempt < max_retries:
-                time.sleep(5)
-                continue
-            print(f"\n[!!!] API 调用最终失败 (URL: {api_url}): {e}\n")
+    # 执行命令
+    try:
+        # 使用 check=True 如果失败会抛出异常
+        result = subprocess.run(curl_cmd, capture_output=True, text=True, encoding='utf-8', timeout=180)
+        
+        if result.returncode != 0:
+            print(f"[!!!] Curl 执行失败: {result.stderr}")
             return None
+            
+        res_json = json.loads(result.stdout)
+        if 'error' in res_json:
+            print(f"\n[!!!] 模型报错: {res_json['error']}")
+            return None
+            
+        return res_json.get('response')
+        
+    except Exception as e:
+        print(f"\n[!!!] Curl 调用异常: {e}\n")
+        return None
 
 def unload_model():
-    """强制卸载模型以释放显存"""
+    """强制卸载模型以释放显存 (同样改用 curl)"""
+    import subprocess
+    import json
     print("[-] 正在请求卸载模型释放显存...")
+    
+    api_url = OLLAMA_API_URL.strip()
+    if not api_url.endswith('/api/generate') and not api_url.endswith('/api/chat'):
+        api_url = api_url.rstrip('/') + '/api/generate'
+
     payload = {
         "model": OLLAMA_MODEL,
         "keep_alive": 0
     }
-    headers = {
-        "Content-Type": "application/json"
-    }
+    
+    curl_cmd = [
+        "curl", "-s", "-X", "POST", api_url,
+        "-H", "Content-Type: application/json",
+        "-d", json.dumps(payload)
+    ]
+    
     if CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET:
-        headers["CF-Access-Client-Id"] = CF_ACCESS_CLIENT_ID
-        headers["CF-Access-Client-Secret"] = CF_ACCESS_CLIENT_SECRET
+        curl_cmd.extend([
+            "-H", f"CF-Access-Client-Id: {CF_ACCESS_CLIENT_ID.strip()}",
+            "-H", f"CF-Access-Client-Secret: {CF_ACCESS_CLIENT_SECRET.strip()}"
+        ])
         
     try:
-        # 即使 API 是 /api/generate，发送 keep_alive: 0 也能生效，或者使用 /api/chat
-        # Ollama 官方推荐加载空 prompt 并设置 keep_alive: 0
-        requests.post(OLLAMA_API_URL, json=payload, headers=headers, timeout=5)
+        subprocess.run(curl_cmd, timeout=10)
         print("[+] 已发送显存释放信号")
-    except Exception as e:
-        print(f"[!] 释放显存请求失败 (无需在意): {e}")
+    except:
+        pass
 
 # --- 3. 核心业务逻辑 ---
 
